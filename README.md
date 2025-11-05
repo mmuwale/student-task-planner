@@ -34,8 +34,8 @@ A Laravel-based task management system for students to track assignments, deadli
   - Update your `.env` file with your database credentials:
   ```env
   DB_DATABASE=student_planner
-  DB_USERNAME=your_mysql_username
-  DB_PASSWORD=your_mysql_password
+  DB_USERNAME=your_mysql_username (should be root)
+  DB_PASSWORD=your_mysql_password (the password you use to login to mysql)
   ```
 5. **Run migrations**  
   `php artisan migrate`  
