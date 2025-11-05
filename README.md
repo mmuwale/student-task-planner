@@ -4,10 +4,10 @@ A Laravel-based task management system for students to track assignments, deadli
 
 ## 👥 Development Team
 - **Maria Muwale - 192414** - Full-Stack Integrator & Team Lead
-- *[To be assigned]* - Backend & Auth Specialist
+- **Githinji Mugambi - 189596** - Backend & Auth Specialist
 - **Faith Muthoni - 178509** - Database & Data Manager  
 - **Allan Waithaka - 191604** - UI/Layout Designer
-- *[To be assigned]* - Frontend & UX Developer
+- **Nathan Achar - 189206** - Frontend & UX Developer
 
 ## 🚀 Quick Start
 
@@ -35,15 +35,16 @@ A Laravel-based task management system for students to track assignments, deadli
     CREATE DATABASE student_planner;
     ```
   - Update your `.env` file with your database credentials:
-    ```env
-    DB_DATABASE=student_planner
-    DB_USERNAME=your_mysql_username (should be root)
-    DB_PASSWORD=your_mysql_password (the password you use to login to mysql)
-    ```
-5. **Run migrations** 
-  ```bash 
-    php artisan migrate
+  ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=student_planner
+   DB_USERNAME=root
+   DB_PASSWORD=(your mysql password)
   ```
+5. **Run migrations**  
+  `php artisan migrate`  
 6. **Start development server**  
   ```bash
    php artisan serve
