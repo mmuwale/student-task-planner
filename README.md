@@ -16,6 +16,7 @@ A Laravel-based task management system for students to track assignments, deadli
 - Composer
 - MySQL 8.0+
 - Git
+- GitGuardian VS code extension (set up using your GitHub email)
 
 ### Installation
 1. **Clone the repository**
