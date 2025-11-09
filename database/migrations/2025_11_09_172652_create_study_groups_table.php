@@ -6,26 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('study_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->date('due_date')->nullable();
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->integer('max_members')->default(5);
+            $table->enum('status', ['active', 'inactive', 'completed'])->default('active');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('study_groups');
     }
 };
