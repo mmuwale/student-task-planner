@@ -8,19 +8,20 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('task_user', function (Blueprint $table) {
+        Schema::create('group_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->foreignId('study_group_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('role', ['assignee', 'reviewer'])->default('assignee');
+            $table->enum('role', ['leader', 'member'])->default('member');
+            $table->dateTime('joined_at');
             $table->timestamps();
             
-            $table->unique(['task_id', 'user_id']);
+            $table->unique(['study_group_id', 'user_id']);
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('task_user');
+        Schema::dropIfExists('group_members');
     }
 };
