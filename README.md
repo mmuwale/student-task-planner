@@ -16,6 +16,7 @@ A Laravel-based task management system for students to track assignments, deadli
 - Composer
 - MySQL 8.0+
 - Git
+- GitGuardian VS code extension (set up using your GitHub email)
 
 ### Installation
 1. **Clone the repository**
@@ -31,6 +32,9 @@ A Laravel-based task management system for students to track assignments, deadli
    php artisan key:generate
 4. **Database Setup**
   - Create a MySQL database named `student_planner`
+    ```mysql
+    CREATE DATABASE student_planner;
+    ```
   - Update your `.env` file with your database credentials:
   ```env
    DB_CONNECTION=mysql
@@ -43,5 +47,7 @@ A Laravel-based task management system for students to track assignments, deadli
 5. **Run migrations**  
   `php artisan migrate`  
 6. **Start development server**  
-  `php artisan serve`  
+  ```bash
+   php artisan serve
+  ``` 
   Visit: `http://localhost:8000`
