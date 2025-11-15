@@ -4,60 +4,75 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Course; // ADD THIS LINE
 
 class TaskSeeder extends Seeder
 {
     public function run()
     {
+        $user = User::first();
+        $courses = Course::all(); // This will work now
+
         $tasks = [
             [
-                'title' => 'Research Proposal',
-                'description' => 'Write and submit research proposal for final project',
-                'due_date' => Carbon::now()->addWeek(),
+                'user_id' => $user->id,
+                'course_id' => $courses->first()->id,
+                'title' => 'Programming Assignment 1',
+                'description' => 'Complete basic programming exercises',
+                'due_date' => now()->addDays(7),
+                'due_time' => '23:59:00',
                 'priority' => 'high',
-                'status' => 'pending',
-                'project_id' => 1,
-                'category_id' => 4,
-                'created_by' => 1,
+                'status' => 'not_started',
+                'estimated_duration' => 120, // minutes
+                'type' => 'assignment',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'title' => 'Literature Review',
-                'description' => 'Complete literature review chapter',
-                'due_date' => Carbon::now()->addWeeks(2),
-                'priority' => 'medium',
-                'status' => 'pending',
-                'project_id' => 1,
-                'category_id' => 4,
-                'created_by' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'Create Database Schema',
-                'description' => 'Design and implement database schema for web application',
-                'due_date' => Carbon::now()->addDays(3),
-                'priority' => 'high',
+                'user_id' => $user->id,
+                'course_id' => $courses->first()->id,
+                'title' => 'Midterm Exam Study',
+                'description' => 'Study chapters 1-5 for midterm exam',
+                'due_date' => now()->addDays(14),
+                'due_time' => '09:00:00',
+                'priority' => 'urgent',
                 'status' => 'in_progress',
-                'project_id' => 2,
-                'category_id' => 3,
-                'created_by' => 1,
+                'estimated_duration' => 300, // minutes
+                'type' => 'study',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => $user->id,
+                'course_id' => $courses->skip(1)->first()->id,
+                'title' => 'Data Structures Project',
+                'description' => 'Implement linked list and binary tree',
+                'due_date' => now()->addDays(10),
+                'due_time' => '17:00:00',
+                'priority' => 'high',
+                'status' => 'not_started',
+                'estimated_duration' => 180, // minutes
+                'type' => 'project',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'user_id' => $user->id,
+                'course_id' => $courses->skip(2)->first()->id,
+                'title' => 'Calculus Problem Set',
+                'description' => 'Complete derivative problems',
+                'due_date' => now()->addDays(3),
+                'due_time' => '14:30:00',
+                'priority' => 'medium',
+                'status' => 'completed',
+                'estimated_duration' => 90, // minutes
+                'type' => 'assignment',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
 
         DB::table('tasks')->insert($tasks);
-
-        // Assign tasks to users
-        $taskAssignments = [
-            ['task_id' => 1, 'user_id' => 1, 'role' => 'assignee'],
-            ['task_id' => 2, 'user_id' => 1, 'role' => 'assignee'],
-            ['task_id' => 3, 'user_id' => 1, 'role' => 'assignee'],
-        ];
-
-        DB::table('task_user')->insert($taskAssignments);
     }
 }

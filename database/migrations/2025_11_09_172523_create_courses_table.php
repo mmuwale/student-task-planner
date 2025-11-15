@@ -10,13 +10,17 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('course_code')->unique(); // e.g., ICS 1201
+            $table->string('course_code'); // Remove unique() - users can have same course codes
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('instructor')->nullable();
             $table->string('color')->default('#3b82f6');
             $table->integer('credit_hours')->default(3);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // ADD THIS LINE
             $table->timestamps();
+            
+            // A user can't have duplicate course codes, but different users can
+            $table->unique(['course_code', 'user_id']);
         });
     }
 
