@@ -4,13 +4,18 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class CourseSeeder extends Seeder
 {
     public function run()
     {
+        // Get the test user that was created in DatabaseSeeder
+        $user = User::first();
+        
         $courses = [
             [
+                'user_id' => $user->id, // ADD THIS
                 'course_code' => 'ICS 1201',
                 'name' => 'Introduction to Programming',
                 'description' => 'Fundamentals of programming and algorithms',
@@ -21,6 +26,7 @@ class CourseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'user_id' => $user->id, // ADD THIS
                 'course_code' => 'ICS 2102',
                 'name' => 'Data Structures and Algorithms',
                 'description' => 'Advanced data structures and algorithm analysis',
@@ -31,6 +37,7 @@ class CourseSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'user_id' => $user->id, // ADD THIS
                 'course_code' => 'MAT 1101',
                 'name' => 'Calculus I',
                 'description' => 'Differential and integral calculus',
