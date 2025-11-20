@@ -57,4 +57,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reminder::class);
     }
+    public function isAdmin():bool
+    {
+        return $this->role->name === 'admin';
+    }
 }
