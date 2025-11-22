@@ -426,7 +426,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="min-height: 100vh; display: flex; flex-direction: column;">
         <!-- Sidebar Toggle Button (mobile/desktop) -->
         <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open sidebar">☰</button>
         <!-- Sidebar -->
@@ -436,7 +436,7 @@
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Main Content -->
-        <div style="flex:1;">
+    <div style="flex:1; display: flex; flex-direction: column;">
             <!-- Header -->
             @include('layouts.partials.header')
             <!-- Main Grid and Content -->
@@ -473,12 +473,67 @@
             sidebarOverlay.classList.remove('open');
         });
     </script>
-    <div>
-        <footer class="footer">
-        <a href=" #" style="color: #210706; text-decoration: none;">
-             &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
-        </a>
-        </footer>
+    <!-- Global Task Modal -->
+    <div id="taskModal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(61,31,46,0.18); align-items: center; justify-content: center;">
+        <div style="background: #fff; border-radius: 14px; max-width: 420px; width: 90vw; padding: 32px 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); position: relative;">
+            <button id="closeTaskModal" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 22px; color: #683844; cursor: pointer;">&times;</button>
+            <h3 style="margin-bottom: 18px; color: #3d1f2e;">Add New Task</h3>
+            <form method="POST" action="#">
+                @csrf
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label for="task-title" style="font-weight: 600; color: #683844;">Task Title</label>
+                        <input type="text" id="task-title" name="title" class="form-control" style="padding: 10px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label for="task-desc" style="font-weight: 600; color: #683844;">Description</label>
+                        <textarea id="task-desc" name="description" class="form-control" style="padding: 10px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px; min-height: 80px;"></textarea>
+                    </div>
+                    <button type="submit" style="margin-top: 12px; background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%); color: #fff; border: none; border-radius: 8px; padding: 12px 0; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Add Task</button>
+                </div>
+            </form>
+        </div>
     </div>
+    <script>
+        // Sidebar toggle (existing)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('open');
+        });
+        sidebarOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+        });
+        // Task Modal logic (global, supports multiple triggers)
+        document.addEventListener('DOMContentLoaded', function() {
+            var openBtns = document.querySelectorAll('#openTaskModal, .openTaskModal');
+            var closeBtn = document.getElementById('closeTaskModal');
+            var modal = document.getElementById('taskModal');
+            openBtns.forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    modal.style.display = 'flex';
+                });
+            });
+            if (closeBtn && modal) {
+                closeBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+    <footer class="footer" style="margin-top: auto;">
+        <a href="#" style="color: #210706; text-decoration: none;">
+            &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
+        </a>
+    </footer>
 </body>
 </html>

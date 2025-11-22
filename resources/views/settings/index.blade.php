@@ -3,8 +3,64 @@
 @section('title', 'Settings')
 @section('page-title', 'Settings')
 @section('content')
-<div class="card">
-    <h2>Settings</h2>
-    <p>Your settings will appear here.</p>
+<div class="card" style="width: 100%; max-width: 800px; min-height: 350px; margin: 48px auto; display: flex; flex-direction: column; justify-content: flex-start;">
+    <h2 style="margin-bottom: 24px; color: #3d1f2e;">Settings</h2>
+    <form style="margin-top: 24px; flex: 1; color: #3d1f2e;" method="POST" action="#">
+        @csrf
+        <!-- Profile Section -->
+        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Profile</h3>
+        <div style="margin-bottom: 20px;">
+            <label for="name" style="display: block; margin-bottom: 6px;">Name</label>
+            <input type="text" id="name" name="name" value="John Doe" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
+        </div>
+        <div style="margin-bottom: 28px;">
+            <label for="email" style="display: block; margin-bottom: 6px;">Email</label>
+            <input type="email" id="email" name="email" value="john@example.com" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
+        </div>
+        <!-- Security Section -->
+        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Account Security</h3>
+        <div style="margin-bottom: 20px;">
+            <label for="password" style="display: block; margin-bottom: 6px;">Change Password</label>
+            <input type="password" id="password" name="password" placeholder="New password" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
+        </div>
+        <div style="margin-bottom: 28px;">
+            <label for="2fa" style="display: block; margin-bottom: 6px;">Two-Factor Authentication</label>
+            <select id="2fa" name="2fa" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
+                <option value="off">Off</option>
+                <option value="sms">SMS</option>
+                <option value="email">Email</option>
+                <option value="app">Authenticator App</option>
+            </select>
+        </div>
+        <!-- Notification Preferences -->
+        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Notification Preferences</h3>
+        <div style="margin-bottom: 28px;">
+            <label style="display: block; margin-bottom: 6px;">Receive notifications via:</label>
+            <div style="display: flex; gap: 16px;">
+                <label><input type="checkbox" name="notify_email" checked> Email</label>
+                <label><input type="checkbox" name="notify_sms"> SMS</label>
+            </div>
+        </div>
+        <!-- Language -->
+        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Language</h3>
+        <div style="margin-bottom: 28px;">
+            <label for="language" style="display: block; margin-bottom: 6px;">Preferred language</label>
+            <select id="language" name="language" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+                <option value="sw">Swahili</option>
+                <option value="zh">Chinese</option>
+                <option value="ar">German</option>
+            </select>
+        </div>
+        <!-- Account Actions -->
+        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Account Actions</h3>
+        <div style="margin-bottom: 20px; display: flex; gap: 16px;">
+            <button type="button" style="background: #e8dcd0; color: #3d1f2e; border: none; border-radius: 6px; padding: 8px 18px; font-size: 15px; cursor: pointer;">Deactivate Account</button>
+            <button type="button" style="background: #c0392b; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 15px; cursor: pointer;">Delete Account</button>
+        </div>
+        <button type="submit" style="background: #ceb2bd; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 16px; cursor: pointer; margin-top: 16px;">Save Changes</button>
+    </form>
 </div>
 @endsection

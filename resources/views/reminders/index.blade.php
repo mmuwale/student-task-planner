@@ -3,8 +3,38 @@
 @section('title', 'Reminders')
 @section('page-title', 'Reminders')
 @section('content')
-<div class="card">
-    <h2>Reminders</h2>
-    <p>Your reminders will appear here.</p>
+<div class="card" style="width: 100%; max-width: 900px; min-height: 350px; margin: 48px auto; display: flex; flex-direction: column; justify-content: flex-start;">
+    <h2 style="margin-bottom: 24px; color: #3d1f2e;">Reminders</h2>
+    <div style="margin-top: 24px; flex: 1;">
+        <table style="width: 100%; border-collapse: collapse; background: #f9f2e8; border-radius: 12px; overflow: hidden;">
+            <thead>
+                <tr style="background: #ceb2bd; color: #2a1520;">
+                    <th style="padding: 12px; text-align: left;">Subject</th>
+                    <th style="padding: 12px; text-align: left;">Message</th>
+                    <th style="padding: 12px; text-align: left;">Sent At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    // Example: Replace with your actual reminders from the database
+                    $reminders = [
+                        ['subject' => 'Assignment Due', 'message' => 'Your math assignment is due tomorrow.', 'sent_at' => '2025-11-22 08:00'],
+                        ['subject' => 'Group Meeting', 'message' => 'Study group meeting at 5pm.', 'sent_at' => '2025-11-21 17:00'],
+                    ];
+                @endphp
+                @forelse($reminders as $reminder)
+                    <tr style="border-bottom: 1px solid #e8dcd0;">
+                        <td style="padding: 12px;">{{ $reminder['subject'] }}</td>
+                        <td style="padding: 12px;">{{ $reminder['message'] }}</td>
+                        <td style="padding: 12px;">{{ $reminder['sent_at'] }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" style="padding: 24px; color: #8b6f63; text-align: center;">No reminders found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\CourseController;
 
 Route::get('/', function () {
     return view('layouts.app');
@@ -16,22 +17,18 @@ Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminde
 // dashboard
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('dashboard/summary', [DashboardController::class, 'summary']);
+Route::get('courses', [CourseController::class, 'index'])->name('courses');
+
 Route::get('courses', function () {
     return view('courses.index');
 })->name('courses');
+Route::get('courses/create', function () {
+    return view('courses.create');
+})->name('courses.create');
 
 Route::get('profile', function () {
-    return view('profile');
+    return view('profile.index');
 })->name('profile');
-
-
-Route::get('notes', function () {
-    return view('notes.index');
-})->name('notes');
-
-Route::get('notes/create', function () {
-    return view('notes.create');
-})->name('notes.create');
 
 Route::get('tasks', function () {
     return view('tasks.index');
@@ -48,8 +45,6 @@ Route::get('projects', function () {
 Route::get('projects/create', function () {
     return view('projects.create');
 })->name('projects.create');
-
-
 
 Route::get('study-group', function () {
     return view('study-group.index');
@@ -76,11 +71,11 @@ Route::get('reminders/create', function () {
 })->name('reminders.create');
 
 Route::get('my-projects', function () {
-    return view('my-projects.index');
+    return view('projects.index');
 })->name('my-projects');
 
 Route::get('my-projects/create', function () {
-    return view('my-projects.create');
+    return view('projects.create');
 })->name('my-projects.create');
 
 Route::get('settings', function () {
