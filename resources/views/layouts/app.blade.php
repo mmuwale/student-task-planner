@@ -162,7 +162,8 @@
             display: grid;
             grid-template-columns: 1fr 350px;
             gap: 24px;
-            margin-bottom: 32px;
+            margin-bottom: 2px;
+
         }
 
         /* Left Column */
@@ -225,10 +226,10 @@
             width: 20px;
             height: 20px;
             min-width: 20px;
-            border: 2px solid #c85a54;
+            border: 2px solid #210706;
             border-radius: 6px;
             cursor: pointer;
-            accent-color: #c85a54;
+            accent-color: #bcdea5;
         }
 
         .task-text {
@@ -256,7 +257,7 @@
         .progress-fill {
             height: 100%;
             width: 78%;
-            background: linear-gradient(90deg, #c85a54 0%, #a64640 100%);
+            background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%);
             border-radius: 10px;
             transition: width 0.3s ease;
         }
@@ -320,8 +321,11 @@
 
         .daily-card {
             display: flex;
+            background: #f5e6d3;
             flex-direction: column;
             gap: 16px;
+            padding: 16px;
+            border-radius: 10px;
         }
 
         .daily-header {
@@ -424,112 +428,32 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="logo" style="margin-bottom:24px ;">Student task planner</div>
-            <!-- Navigation -->
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                 <a href="{{ route('dashboard') }}" class="sidebar-item{{ request()->routeIs('dashboard') ? ' active' : '' }}">Home</a>
-                 <a href="#" class="sidebar-item">Add new task</a>
-                 <a href="#" class="sidebar-item">Notes</a>
-                 <a href="{{ route('courses') }}" class="sidebar-item{{ request()->routeIs('courses') ? ' active' : '' }}">My Courses</a>
-                 <a href="#" class="sidebar-item">Study Group</a>
-                 <a href="#" class="sidebar-item">Calendar</a>
-                 <a href="#" class="sidebar-item">Reminders</a>
-                 <a href="#" class="sidebar-item">My Projects</a>
-                 <a href="#" class="sidebar-item">Settings</a>
-            </div>
+            @include('layouts.partials.navigation')
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Main Content -->
         <div style="flex:1;">
             <!-- Header -->
-            <div class="header">
-                <div class="nav">
-                    <a href="#">Courses</a>
-                    <a href="#">Tasks</a>
-                </div>
-                <div class="user-menu">Profiles</div>
-            </div>
-            <!-- Main Grid and Content (unchanged) -->
-            <div class="main-grid">
-                <!-- Left Column -->
-                <div class="left-column">
-                    <!-- Upcoming Tasks -->
-                    <div class="card upcoming-tasks">
-                        <div class="card-title">Upcoming Tasks</div>
-                        <div class="task-list">
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox">
-                                <span class="task-text">Do this</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox">
-                                <span class="task-text">Do this</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox">
-                                <span class="task-text">Do this</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox">
-                                <span class="task-text">Do this</span>
-                            </label>
-                            <label class="task-item">
-                                <input type="checkbox" class="task-checkbox">
-                                <span class="task-text">Do this</span>
-                            </label>
-                        </div>
+            @include('layouts.partials.header')
+            <!-- Main Grid and Content -->
+            @if (request()->is('/'))
+                <div class="main-grid">
+                    <!-- Left Column -->
+                    <div class="left-column">
+                        <!-- Upcoming Tasks -->
+                        @include('layouts.partials.upcoming-tasks')
+                        <!-- Daily Cards -->
+                        @include('layouts.partials.daily-cards')
                     </div>
-                    <!-- Daily Cards (unchanged) -->
-                    <div class="daily-cards">
-                        <!-- ...existing daily cards... -->
+                    <!-- Right Sidebar (unchanged) -->
+                    <div class="sidebar" style="position:static;transform:none;box-shadow:none;background:none;padding:0;">
+                        @include('layouts.partials.progress-card')
+                        @include('layouts.partials.leaderboard-card')
                     </div>
                 </div>
-                <!-- Right Sidebar (unchanged) -->
-                <div class="sidebar" style="position:static;transform:none;box-shadow:none;background:none;padding:0;">
-                    <!-- Progress Card -->
-                    <div class="card progress-card">
-                        <div class="card-title">Progress</div>
-                        <div>
-                            <div class="progress-bar">
-                                <div class="progress-fill"></div>
-                            </div>
-                            <div class="progress-label" style="margin-top: 10px;">
-                                <span>78% Complete</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Leaderboard Card -->
-                    <div class="card leaderboard-card">
-                        <div class="card-title">Leaderboard</div>
-                        <div class="leaderboard-list">
-                            <div class="leaderboard-item">
-                                <span class="leaderboard-rank">1.</span>
-                                <span class="leaderboard-name">Nathan</span>
-                                <span class="leaderboard-percent">78%</span>
-                            </div>
-                            <div class="leaderboard-item">
-                                <span class="leaderboard-rank">2.</span>
-                                <span class="leaderboard-name">Sarah</span>
-                                <span class="leaderboard-percent">65%</span>
-                            </div>
-                            <div class="leaderboard-item">
-                                <span class="leaderboard-rank">3.</span>
-                                <span class="leaderboard-name">Maria</span>
-                                <span class="leaderboard-percent">50%</span>
-                            </div>
-                            <div class="leaderboard-item">
-                                <span class="leaderboard-rank">4.</span>
-                                <span class="leaderboard-name">Jerry</span>
-                                <span class="leaderboard-percent">45%</span>
-                            </div>
-                            <div class="leaderboard-item">
-                                <span class="leaderboard-rank">5.</span>
-                                <span class="leaderboard-name">Arnie</span>
-                                <span class="leaderboard-percent">30%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @else
+                @yield('content')
+            @endif
         </div>
     </div>
     <script>
