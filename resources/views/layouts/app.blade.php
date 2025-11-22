@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Dashboard</title>
     <style>
+        .sidebar-item {
+            text-decoration: none !important;
+        }
+        @media (min-width: 1525px) {
+            .header {
+                margin-left: 100px;
+            }
+        }
         /* Sidebar  */
         .sidebar {
             display: flex;
@@ -51,8 +59,8 @@
             z-index: 999;
         }
          .sidebar-item.active {
-            background: #d4a5a0;
-            border-left-color: #c85a54;
+            background: #ceb2bd;
+            border-left-color: #683844;
             color: #2a1520;
             font-weight: 600;
         }
@@ -123,7 +131,7 @@
         }
         .nav {
             display: flex;
-            gap: 32px;
+            gap: 100px;
             align-items: center;
         }
 
@@ -372,6 +380,15 @@
                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             }
         }
+        /* footer */
+        .footer {
+            background: #f3ecd8;
+            color: #210706;
+            padding: 50px 0px 50px 0px;
+            text-align: center;
+            font-size: 14px;
+            position: relative;
+        }
 
         @media (max-width: 768px) {
             .header {
@@ -409,15 +426,15 @@
             <div class="logo" style="margin-bottom:24px ;">Student task planner</div>
             <!-- Navigation -->
             <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div class="sidebar-item active">Home</div>
-                <div class="sidebar-item">Add new task</div>
-                <div class="sidebar-item">Notes</div>
-                <div class="sidebar-item">My Courses</div>
-                <div class="sidebar-item">Study Group</div>
-                <div class="sidebar-item">Calendar</div>
-                <div class="sidebar-item">Reminders</div>
-                <div class="sidebar-item">My Projects</div>
-                <div class="sidebar-item">Settings</div>
+                 <a href="{{ route('dashboard') }}" class="sidebar-item{{ request()->routeIs('dashboard') ? ' active' : '' }}">Home</a>
+                 <a href="#" class="sidebar-item">Add new task</a>
+                 <a href="#" class="sidebar-item">Notes</a>
+                 <a href="{{ route('courses') }}" class="sidebar-item{{ request()->routeIs('courses') ? ' active' : '' }}">My Courses</a>
+                 <a href="#" class="sidebar-item">Study Group</a>
+                 <a href="#" class="sidebar-item">Calendar</a>
+                 <a href="#" class="sidebar-item">Reminders</a>
+                 <a href="#" class="sidebar-item">My Projects</a>
+                 <a href="#" class="sidebar-item">Settings</a>
             </div>
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -426,12 +443,10 @@
             <!-- Header -->
             <div class="header">
                 <div class="nav">
-                    <a href="app" class="active">Home</a>
-                    <a href="courses.create">Courses</a>
-                    <a href="tasks.create">Tasks</a>
-                    <a href="profile.create">Profile</a>
+                    <a href="#">Courses</a>
+                    <a href="#">Tasks</a>
                 </div>
-                <div class="user-menu">User Menu</div>
+                <div class="user-menu">Profiles</div>
             </div>
             <!-- Main Grid and Content (unchanged) -->
             <div class="main-grid">
@@ -530,5 +545,12 @@
             sidebarOverlay.classList.remove('open');
         });
     </script>
+    <div>
+        <footer class="footer">
+        <a href=" #" style="color: #210706; text-decoration: none;">
+             &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
+        </a>
+        </footer>
+    </div>
 </body>
 </html>
