@@ -33,6 +33,24 @@ Route::get('notes/create', function () {
     return view('notes.create');
 })->name('notes.create');
 
+Route::get('tasks', function () {
+    return view('tasks.index');
+})->name('tasks');
+
+Route::get('tasks/create', function () {
+    return view('tasks.create');
+})->name('tasks.create');
+
+Route::get('projects', function () {
+    return view('projects.index');
+})->name('projects');
+
+Route::get('projects/create', function () {
+    return view('projects.create');
+})->name('projects.create');
+
+
+
 Route::get('study-group', function () {
     return view('study-group.index');
 })->name('study-group');
