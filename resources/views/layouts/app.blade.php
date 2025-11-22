@@ -147,6 +147,10 @@
             border-bottom: 2px solid #c85a54;
             padding-bottom: 4px;
         }
+        .user-menu.active {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+        }
 
         .nav a:hover {
             opacity: 0.8;
