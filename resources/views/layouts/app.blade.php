@@ -740,17 +740,6 @@
                     <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
                     <span>Student Task Planner</span>
                 </div>
-<<<<<<< HEAD
-                <div x-show="sidebarOpen" class="text-xs leading-tight">
-                    <div class="font-semibold tracking-wide">Student Planner</div>
-                    <div class="text-[10px] text-[#f2d9e0]">www.student-planner.com</div>
-                </div>
-=======
-                <div class="nav">
-                    <a href="{{ route('courses') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}">Courses</a>
-                    <a href="{{ route('tasks.index') }}" class="{{ request()->routeIs('tasks.*') ? 'active' : '' }}">Tasks</a>
-                </div>
-                
                 <!-- User Menu / Auth Links -->
                 @if(Auth::check())
                     <div class="user-menu" id="userMenu">
