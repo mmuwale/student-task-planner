@@ -5,7 +5,6 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Course;
-use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 
@@ -13,8 +12,9 @@ class Courses extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    
     public $search;
+    public $orderField = "name";
+    public $orderDirection = "asc";
     public $id, $name, $description;
     public $showForm = false;
     public $isEditing = false;
@@ -27,7 +27,7 @@ class Courses extends Component
             $query->where('name', 'like', '%' . $this->search . '%');
         }
 
-        
+        $query->orderBy($this->orderField, $this->orderDirection);
         $courses = $query->paginate(env('PAGINATION_COUNT', 10));
 
         return view('livewire.courses', compact('courses'))
@@ -43,7 +43,15 @@ class Courses extends Component
         ];
     }
 
-   
+    public function orderBy($field)
+    {
+        if ($this->orderField === $field) {
+            $this->orderDirection = $this->orderDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->orderField = $field;
+            $this->orderDirection = 'asc';
+        }
+    }
 
     public function clearSearch()
     {
@@ -66,38 +74,18 @@ class Courses extends Component
     public function store()
     {
         $this->validate();
-        
         try {
-            // Get the first user or create a demo user
-            $user = User::first();
-            
-            if (!$user) {
-                // Create a demo user if none exists
-                $user = User::create([
-                    'name' => 'Demo User',
-                    'email' => 'demo@example.com',
-                    'password' => bcrypt('password'),
-                ]);
-            }
-            
             Course::create([
-                'user_id' => $user->id,
                 'name' => $this->name,
                 'description' => $this->description,
-                'course_code' => 'CRS' . rand(1000, 9999),
-                'instructor' => 'TBA',
-                'color' => '#3b82f6',
-                'credit_hours' => 3,
             ]);
-            
-            session()->flash('success', 'Course created successfully.');
-            $this->reset();
-            $this->showForm = false;
-            
-        } catch (\Exception $e) {
+            session()->flash('message', 'Course created successfully.');
+        } catch (QueryException $e) {
             Log::error('Error creating course: ' . $e->getMessage());
             session()->flash('error', 'Failed to create course. Please try again.');
         }
+        $this->reset();
+        $this->showForm = false;
     }
 
     public function edit($id)
@@ -120,13 +108,13 @@ class Courses extends Component
                 'name' => $this->name,
                 'description' => $this->description,
             ]);
-            session()->flash('success', 'Course updated successfully.');
-            $this->reset();
-            $this->showForm = false;
-        } catch (\Exception $e) {
+            session()->flash('message', 'Course updated successfully.');
+        } catch (QueryException $e) {
             Log::error('Error updating course: ' . $e->getMessage());
             session()->flash('error', 'Failed to update course. Please try again.');
         }
+        $this->reset();
+        $this->showForm = false;
     }
 
     public function destroy($id)
@@ -135,7 +123,7 @@ class Courses extends Component
             $course = Course::findOrFail($id);
             $course->delete();
             session()->flash('success', 'Course deleted successfully');
-        } catch (\Exception $e) {
+        } catch (QueryException $e) {
             Log::error('Error deleting course: ' . $e->getMessage());
             session()->flash('error', 'Course cannot be deleted');
         }
