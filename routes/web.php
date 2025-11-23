@@ -51,7 +51,7 @@ Route::get('tasks/create', function () {
     // Study Groups
     Route::get('study-group', function () {
         return view('study-group.index');
-    })->name('study-group');
+    })->name('study-group.index');
     Route::get('study-group/create', function () {
         return view('study-group.create');
     })->name('study-group.create');
