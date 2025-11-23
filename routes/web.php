@@ -15,6 +15,57 @@ Route::get('/', function () {
 // Authentication routes (from auth.php)
 require __DIR__.'/auth.php';
 
+// Initial code routes
+Route::apiResource('tasks', TaskController::class);
+Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
+
+// dashboard
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('dashboard/summary', [DashboardController::class, 'summary']);
+Route::get('courses', [CourseController::class, 'index'])->name('courses');
+
+Route::get('courses', function () {
+    return view('courses.index');
+})->name('courses');
+Route::get('courses/create', function () {
+    return view('courses.create');
+})->name('courses.create');
+
+Route::get('profile', function () {
+    return view('profile.index');
+})->name('profile');
+
+require __DIR__.'/tasks.php';
+
+Route::get('tasks/create', function () {
+    return view('tasks.create');
+})->name('tasks.create');
+Route::get('tasks', function () {
+    return view('tasks.index');
+})->name('tasks.index');
+Route::get('study-group', function () {
+    return view('study-group.index');
+})->name('study-group');
+
+Route::get('study-group/create', function () {
+    return view('study-group.create');
+})->name('study-group.create');
+
+require __DIR__.'/calendar.php';
+
+Route::get('calendar/create', function () {
+    return view('calendar.create');
+})->name('calendar.create');
+
+require __DIR__.'/reminders.php';
+
+Route::get('reminders/create', function () {
+    return view('reminders.create');
+})->name('reminders.create');
+
+Route::get('settings', function () {
+    return view('settings.index');
+})->name('settings');
 // Protected routes - require authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard

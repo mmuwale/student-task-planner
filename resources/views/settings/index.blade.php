@@ -17,9 +17,7 @@
             <label for="2fa" style="display: block; margin-bottom: 6px;">Two-Factor Authentication</label>
             <select id="2fa" name="2fa" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
                 <option value="off">Off</option>
-                <option value="sms">SMS</option>
                 <option value="email">Email</option>
-                <option value="app">Authenticator App</option>
             </select>
         </div>
         <!-- Notification Preferences -->
@@ -31,18 +29,7 @@
             </div>
         </div>
         <!-- Language -->
-        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Language</h3>
-        <div style="margin-bottom: 28px;">
-            <label for="language" style="display: block; margin-bottom: 6px;">Preferred language</label>
-            <select id="language" name="language" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
-                <option value="en">English</option>
-                <option value="fr">French</option>
-                <option value="es">Spanish</option>
-                <option value="sw">Swahili</option>
-                <option value="zh">Chinese</option>
-                <option value="ar">German</option>
-            </select>
-        </div>
+        
         <!-- Account Actions -->
         <h3 style="margin-bottom: 12px; color: #6b3d4d;">Account Actions</h3>
         <div style="margin-bottom: 20px; display: flex; gap: 16px;">
