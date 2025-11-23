@@ -46,15 +46,9 @@ require __DIR__.'/tasks.php';
 Route::get('tasks/create', function () {
     return view('tasks.create');
 })->name('tasks.create');
-
-Route::get('projects', function () {
-    return view('projects.index');
-})->name('projects');
-
-Route::get('projects/create', function () {
-    return view('projects.create');
-})->name('projects.create');
-
+Route::get('tasks', function () {
+    return view('tasks.index');
+})->name('tasks.index');
 Route::get('study-group', function () {
     return view('study-group.index');
 })->name('study-group');
@@ -74,14 +68,6 @@ require __DIR__.'/reminders.php';
 Route::get('reminders/create', function () {
     return view('reminders.create');
 })->name('reminders.create');
-
-Route::get('my-projects', function () {
-    return view('projects.index');
-})->name('my-projects');
-
-Route::get('my-projects/create', function () {
-    return view('projects.create');
-})->name('my-projects.create');
 
 Route::get('settings', function () {
     return view('settings.index');

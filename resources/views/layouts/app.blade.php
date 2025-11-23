@@ -640,8 +640,6 @@
                     <span>Student Task Planner</span>
                 </div>
                 <div class="nav">
-                    <a href="{{ route('courses') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}">Courses</a>
-                    <a href="{{ route('tasks') }}" class="{{ request()->routeIs('tasks.*') ? 'active' : '' }}">Tasks</a>
                     <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">Profile</a>
                 </div>
                 <div class="user-menu">
