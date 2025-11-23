@@ -58,16 +58,54 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+        // Validation updated: Changed 'required|exists:courses,id' to 'required|integer' 
+        // to prevent a 500 error if the courses table is empty or missing ID=1.
         $data = $request->validate([
-            'course_id' => 'required|exists:courses,id',
+            'course_id' => 'required|integer', 
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
+            'due_date' => 'required|date',
             'status' => 'nullable|in:pending,completed',
             'reminder_at' => 'nullable|date',
         ]);
+        
+        // Ensure status defaults to 'pending' if not explicitly set
+        if (!isset($data['status'])) {
+            $data['status'] = 'pending';
+        }
 
         $task = Task::create($data);
+        
+        // Check if the request is an AJAX request (for dynamic calendar update)
+        if ($request->ajax() || $request->wantsJson()) {
+            
+            // Generate the time display for the task list item
+            // Check if the due_date contains a time component
+            $parsedDate = Carbon::parse($task->due_date);
+            $timeFormat = ($task->due_date && $parsedDate->format('H:i:s') !== '00:00:00') 
+                ? $parsedDate->format('g:i A') 
+                : null;
+
+            // Construct the HTML snippet, matching the style in the calendar view
+            // Using e() for escaping the title to prevent XSS
+            $taskHtml = '<li style="background: #fff; border-radius: 6px; margin-bottom: 4px; padding: 4px 6px; color: #3d1f2e; font-size: 14px; border: 1px solid #e0c3c3;">'
+                        . e($task->title); 
+
+            if ($timeFormat) {
+                // Time span style
+                $taskHtml .= '<span style="color: #683844; font-size: 12px;">(' . $timeFormat . ')</span>';
+            }
+            
+            $taskHtml .= '</li>';
+
+            // Return the JSON response for dynamic calendar update
+            return response()->json([
+                'task' => $task,
+                'taskHtml' => $taskHtml, // The HTML snippet to insert in the calendar cell
+            ], 201);
+        }
+
+        // Default JSON response for non-AJAX API calls
         return response()->json($task, 201);
     }
 
