@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    public function index()
+    {
+        // You can customize the view name as needed
+        return view('dashboard');
+    }
     public function summary(Request $request)
     {
         $now = Carbon::now();
