@@ -17,9 +17,7 @@
             <label for="2fa" style="display: block; margin-bottom: 6px;">Two-Factor Authentication</label>
             <select id="2fa" name="2fa" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
                 <option value="off">Off</option>
-                <option value="sms">SMS</option>
                 <option value="email">Email</option>
-                <option value="app">Authenticator App</option>
             </select>
         </div>
         <!-- Notification Preferences -->
