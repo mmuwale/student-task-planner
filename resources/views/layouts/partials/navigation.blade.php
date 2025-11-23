@@ -4,6 +4,5 @@
     <a href="{{ route('study-group') }}" class="sidebar-item{{ request()->routeIs('study-group') ? ' active' : '' }}">Study Group</a>
     <a href="{{ route('calendar') }}" class="sidebar-item{{ request()->routeIs('calendar') ? ' active' : '' }}">Calendar</a>
     <a href="{{ route('reminders') }}" class="sidebar-item{{ request()->routeIs('reminders') ? ' active' : '' }}">Reminders</a>
-    <a href="{{ route('my-projects') }}" class="sidebar-item{{ request()->routeIs('my-projects') ? ' active' : '' }}">My Projects</a>
     <a href="{{ route('settings') }}" class="sidebar-item{{ request()->routeIs('settings') ? ' active' : '' }}">Settings</a>
 </div>

@@ -7,16 +7,6 @@
     <h2 style="margin-bottom: 24px; color: #3d1f2e;">Settings</h2>
     <form style="margin-top: 24px; flex: 1; color: #3d1f2e;" method="POST" action="#">
         @csrf
-        <!-- Profile Section -->
-        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Profile</h3>
-        <div style="margin-bottom: 20px;">
-            <label for="name" style="display: block; margin-bottom: 6px;">Name</label>
-            <input type="text" id="name" name="name" value="John Doe" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
-        </div>
-        <div style="margin-bottom: 28px;">
-            <label for="email" style="display: block; margin-bottom: 6px;">Email</label>
-            <input type="email" id="email" name="email" value="john@example.com" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
-        </div>
         <!-- Security Section -->
         <h3 style="margin-bottom: 12px; color: #6b3d4d;">Account Security</h3>
         <div style="margin-bottom: 20px;">
@@ -38,7 +28,6 @@
             <label style="display: block; margin-bottom: 6px;">Receive notifications via:</label>
             <div style="display: flex; gap: 16px;">
                 <label><input type="checkbox" name="notify_email" checked> Email</label>
-                <label><input type="checkbox" name="notify_sms"> SMS</label>
             </div>
         </div>
         <!-- Language -->
