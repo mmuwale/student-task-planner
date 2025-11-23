@@ -9,7 +9,7 @@
     <h2 style="margin-bottom: 24px; color: #3d1f2e;">Tasks</h2>
     {{-- $tasks is passed from the controller and contains real user tasks --}}
     <div style="margin-top: 24px; flex: 1;">
-        @if(count($tasks))
+        @if(isset($tasks) && count($tasks))
             <table style="width: 100%; border-collapse: collapse; background: #f9f2e8; border-radius: 12px; overflow: hidden;">
                 <thead>
                     <tr style="background: #ceb2bd; color: #2a1520;">
