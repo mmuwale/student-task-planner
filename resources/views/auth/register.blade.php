@@ -1,31 +1,99 @@
 @extends('layouts.app')
 
 @section('title', 'Register')
+
 @section('content')
-<div style="max-width: 400px; margin: 80px auto; background: #f5e6d3; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.10); padding: 40px 32px;">
-    <h2 style="text-align: center; color: #3d1f2e; margin-bottom: 32px;">Sign Up</h2>
-    <form method="POST" action="#">
-        @csrf
-        <div style="margin-bottom: 20px;">
-            <label for="name" style="display: block; color: #683844; font-weight: 600; margin-bottom: 6px;">Name</label>
-            <input type="text" id="name" name="name" required autofocus style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px;">
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f0f6f7 0%, #e8f0f2 100%); padding: 20px;">
+    <div style="max-width: 440px; width: 100%; background: #ffffff; border-radius: 20px; box-shadow: 0 12px 40px rgba(137, 29, 26, 0.1); padding: 48px 40px; border: 1px solid rgba(241, 230, 210, 0.3);">
+        <!-- Logo -->
+        <div style="text-align: center; margin-bottom: 32px;">
+            <h3 style="color: #210706; font-size: 28px; font-weight: 700; margin: 0;">Create Account</h3>
+            <p style="color: #6b7280; margin-top: 8px; font-size: 14px;">Join thousands of students staying organized</p>
         </div>
-        <div style="margin-bottom: 20px;">
-            <label for="email" style="display: block; color: #683844; font-weight: 600; margin-bottom: 6px;">Email</label>
-            <input type="email" id="email" name="email" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px;">
+
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+
+            <!-- Name -->
+            <div style="margin-bottom: 20px;">
+                <label for="name" style="display: block; color: #210706; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Full Name</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
+                       style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(241, 230, 210, 0.8); background: #f8f4eb; color: #210706; font-size: 15px; transition: all 0.2s;"
+                       onfocus="this.style.borderColor='#891d1a'; this.style.boxShadow='0 0 0 2px rgba(137, 29, 26, 0.1)';"
+                       onblur="this.style.borderColor='rgba(241, 230, 210, 0.8)'; this.style.boxShadow='none';">
+                @error('name')
+                    <div style="color: #dc2626; font-size: 14px; margin-top: 6px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Email Address -->
+            <div style="margin-bottom: 20px;">
+                <label for="email" style="display: block; color: #210706; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Email Address</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="username"
+                       style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(241, 230, 210, 0.8); background: #f8f4eb; color: #210706; font-size: 15px; transition: all 0.2s;"
+                       onfocus="this.style.borderColor='#891d1a'; this.style.boxShadow='0 0 0 2px rgba(137, 29, 26, 0.1)';"
+                       onblur="this.style.borderColor='rgba(241, 230, 210, 0.8)'; this.style.boxShadow='none';">
+                @error('email')
+                    <div style="color: #dc2626; font-size: 14px; margin-top: 6px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Password -->
+            <div style="margin-bottom: 20px;">
+                <label for="password" style="display: block; color: #210706; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="new-password"
+                       style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(241, 230, 210, 0.8); background: #f8f4eb; color: #210706; font-size: 15px; transition: all 0.2s;"
+                       onfocus="this.style.borderColor='#891d1a'; this.style.boxShadow='0 0 0 2px rgba(137, 29, 26, 0.1)';"
+                       onblur="this.style.borderColor='rgba(241, 230, 210, 0.8)'; this.style.boxShadow='none';">
+                @error('password')
+                    <div style="color: #dc2626; font-size: 14px; margin-top: 6px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Confirm Password -->
+            <div style="margin-bottom: 32px;">
+                <label for="password_confirmation" style="display: block; color: #210706; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Confirm Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password"
+                       style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(241, 230, 210, 0.8); background: #f8f4eb; color: #210706; font-size: 15px; transition: all 0.2s;"
+                       onfocus="this.style.borderColor='#891d1a'; this.style.boxShadow='0 0 0 2px rgba(137, 29, 26, 0.1)';"
+                       onblur="this.style.borderColor='rgba(241, 230, 210, 0.8)'; this.style.boxShadow='none';">
+                @error('password_confirmation')
+                    <div style="color: #dc2626; font-size: 14px; margin-top: 6px;">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" 
+                    style="width: 100%; background: linear-gradient(90deg, #891d1a 0%, #a82a26 100%); color: #ffffff; border: none; border-radius: 12px; padding: 16px 0; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(137, 29, 26, 0.3);"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(137, 29, 26, 0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(137, 29, 26, 0.3)';">
+                Create Account
+            </button>
+        </form>
+
+        <!-- Login Link -->
+        <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(241, 230, 210, 0.5);">
+            <p style="color: #6b7280; font-size: 14px; margin: 0;">
+                Already have an account?
+                <a href="{{ route('login') }}" style="color: #891d1a; text-decoration: none; font-weight: 600; margin-left: 4px; transition: color 0.2s;"
+                   onmouseover="this.style.color='#a82a26';"
+                   onmouseout="this.style.color='#891d1a';">
+                    Sign in here
+                </a>
+            </p>
         </div>
-        <div style="margin-bottom: 20px;">
-            <label for="password" style="display: block; color: #683844; font-weight: 600; margin-bottom: 6px;">Password</label>
-            <input type="password" id="password" name="password" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px;">
-        </div>
-        <div style="margin-bottom: 24px;">
-            <label for="password_confirmation" style="display: block; color: #683844; font-weight: 600; margin-bottom: 6px;">Confirm Password</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px;">
-        </div>
-        <button type="submit" style="width: 100%; background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%); color: #fff; border: none; border-radius: 8px; padding: 14px 0; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Register</button>
-    </form>
-    <div style="text-align: center; margin-top: 24px; font-size: 14px; color: #683844;">
-        Already have an account? <a href="#" style="color: #cc4c46; text-decoration: none;">Sign in</a>
     </div>
 </div>
+
+<style>
+    /* Additional responsive styles */
+    @media (max-width: 480px) {
+        .container {
+            padding: 20px 16px;
+        }
+        .form-container {
+            padding: 32px 24px;
+        }
+    }
+</style>
 @endsection
