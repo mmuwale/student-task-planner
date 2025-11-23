@@ -740,10 +740,12 @@
                     <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
                     <span>Student Task Planner</span>
                 </div>
-                <!-- User Menu / Auth Links -->
-                @if(Auth::check())
-                    <div class="user-menu" id="userMenu">
-                        <div class="user-avatar" id="userAvatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                <div class="nav">
+                    <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">Profile</a>
+                </div>
+                <div class="user-menu">
+                    @if(Auth::check())
+                        <div class="user-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
                         <span>Welcome, {{ Auth::user()->name }}!</span>
                         <div id="avatarDropdown" class="avatar-dropdown">
                             <a href="{{ route('profile') }}">Profile</a>

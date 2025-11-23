@@ -48,14 +48,16 @@ require __DIR__.'/tasks.php';
 Route::get('tasks/create', function () {
     return view('tasks.create');
 })->name('tasks.create');
+Route::get('tasks', function () {
+    return view('tasks.index');
+})->name('tasks.index');
+Route::get('study-group', function () {
+    return view('study-group.index');
+})->name('study-group');
 
-    // Study Groups
-    Route::get('study-group', function () {
-        return view('study-group.index');
-    })->name('study-group.index');
-    Route::get('study-group/create', function () {
-        return view('study-group.create');
-    })->name('study-group.create');
+Route::get('study-group/create', function () {
+    return view('study-group.create');
+})->name('study-group.create');
 
     // Calendar
     require __DIR__.'/calendar.php';
@@ -63,30 +65,16 @@ Route::get('tasks/create', function () {
         return view('calendar.create');
     })->name('calendar.create');
 
-    // Reminders
-    require __DIR__.'/reminders.php';
-    Route::get('reminders/create', function () {
-        return view('reminders.create');
-    })->name('reminders.create');
+require __DIR__.'/reminders.php';
 
-    // Settings
-    Route::get('settings', function () {
-        return view('settings.index');
-    })->name('settings.index');
-    Route::get('settings/create', function () {
-        return view('settings.create');
-    })->name('settings.create');
+Route::get('reminders/create', function () {
+    return view('reminders.create');
+})->name('reminders.create');
 
-// Test email route (temporary)
-Route::get('/test-email', function () {
-    try {
-        Mail::raw('Test email from Student Task Planner', function ($message) {
-            $message->to('test@example.com')
-                    ->subject('Test Email');
-        });
-        return 'Email sent successfully!';
-    } catch (\Exception $e) {
-        return 'Email error: ' . $e->getMessage();
-    }
-});
->>>>>>> 1b898f6 (fixed the login and registration pages, and started authentication)
+Route::get('settings', function () {
+    return view('settings.index');
+})->name('settings');
+
+Route::get('settings/create', function () {
+    return view('settings.create');
+})->name('settings.create');
