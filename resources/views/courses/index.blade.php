@@ -9,25 +9,26 @@
   </div>
 
   @php
+  $cardColor = '#4d0011';
   $courses = [
-    ['name' => 'Software Engineering', 'tasks' => 'Two Tasks remaining', 'instructor' => 'Nathan Achar', 'color' => '#63001f'],
-    ['name' => 'Discrete Math', 'tasks' => 'Six Tasks remaining', 'instructor' => 'Nathan Achar', 'color' => '#131936'],
-    ['name' => 'Linear Algebra', 'tasks' => 'One Task remaining', 'instructor' => 'Nathan Achar', 'color' => '#d1aea6'],
-    ['name' => 'Differential Calculus', 'tasks' => 'No Task remaining', 'instructor' => 'Nathan Achar', 'color' => '#371931'],
-    ['name' => 'Operating Systems', 'tasks' => 'Five Tasks remaining', 'instructor' => 'Nathan Achar', 'color' => '#1c1b23'],
-    ['name' => 'Principles of Ethics', 'tasks' => 'One Task remaining', 'instructor' => 'Nathan Achar', 'color' => '#6e7c89'],
-    ['name' => 'Maisha Program', 'tasks' => 'No Task remaining', 'instructor' => 'Nathan Achar', 'color' => '#223631'],
-    ['name' => 'Web Application Development', 'tasks' => 'Three Tasks remaining', 'instructor' => 'Nathan Achar', 'color' => '#727d71'],
+    ['name' => 'Software Engineering', 'tasks' => 'Two Tasks remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Discrete Math', 'tasks' => 'Six Tasks remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Linear Algebra', 'tasks' => 'One Task remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Differential Calculus', 'tasks' => 'No Task remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Operating Systems', 'tasks' => 'Five Tasks remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Principles of Ethics', 'tasks' => 'One Task remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Maisha Program', 'tasks' => 'No Task remaining', 'instructor' => 'Nathan Achar'],
+    ['name' => 'Web Application Development', 'tasks' => 'Three Tasks remaining', 'instructor' => 'Nathan Achar'],
   ];
   @endphp
 
   @if(count($courses))
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px;">
     @foreach($courses as $course)
-    <div style="background: {{ $course['color'] }}; border-radius: 10px; padding: 28px; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+    <div style="background: {{ $cardColor }}; border-radius: 10px; padding: 28px; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
       <div>
         <h3 style="color: #fff; margin: 0 0 12px 0; font-size: 1.2rem;">{{ $course['name'] }}</h3>
-        <div style="background: #d0ffce; color: #1a1a1a; border-radius: 5px; padding: 8px 14px; display: inline-block; font-size: 0.97rem; font-weight: 600;">
+        <div style="background: #fffcef; color: #1a1a1a; border-radius: 5px; padding: 8px 14px; display: inline-block; font-size: 0.97rem; font-weight: 600;">
           {{ $course['tasks'] }}
         </div>
       </div>
