@@ -52,110 +52,126 @@ A Laravel-based task management system for students to track assignments, deadli
   ``` 
   Visit: `http://localhost:8000`
 
+# 🎯 Prototype Features
 
-  # Database Schema
+## Student Features
+- **✅ User Authentication** – Register, login, profile management  
+- **✅ Course Management** – Add, edit, view courses with color coding  
+- **✅ Task & Assignment Tracking** – Create tasks with deadlines, priorities, and status  
+- **✅ Study Groups** – Create and join collaborative study groups  
+- **✅ Reminder System** – Smart deadline reminders  
+- **✅ Dashboard** – Weekly view, progress tracking, upcoming tasks  
 
-## 🗄️ Tables Structure
+## Admin Features
+- **👑 Course Management** – Add, edit, delete system-wide courses  
+- **👑 User Management** – Manage student accounts and roles  
+- **👑 Group Oversight** – Monitor study groups and members  
+- **👑 Task Analytics** – View completion rates and student progress  
+- **👑 Automated Reminders** – System-generated email notifications for:  
+  - New task assignments  
+  - Group membership updates  
+  - Approaching deadlines  
 
-### Users
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| name | varchar | User's full name |
-| email | varchar | User's email address |
-| password | varchar | Hashed password |
-| avatar_url | varchar | Profile picture URL |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
 
-### Courses
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| course_code | varchar | Course code (e.g., ICS 1201) |
-| course_name | varchar | Course full name |
-| color | varchar | UI color for the course |
-| user_id | integer | Foreign key → users.id |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+# Database Schema
 
-### Tasks
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| title | varchar | Task title |
-| description | text | Task description |
-| due_date | date | Due date |
-| due_time | time | Due time |
-| priority | varchar | Priority level (low/medium/high/urgent) |
-| status | varchar | Status (not_started/in_progress/completed) |
-| estimated_hours | decimal | Estimated time to complete |
-| course_id | integer | Foreign key → courses.id |
-| user_id | integer | Foreign key → users.id |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+```mermaid
+erDiagram
 
-### Study Groups
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| group_name | varchar | Study group name |
-| task_id | integer | Foreign key → tasks.id |
-| created_by | integer | Foreign key → users.id |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+    %% Core user and role entities
+    users ||--o{ user_roles : has
+    users ||--o{ courses : creates
+    users ||--o{ tasks : creates
+    users ||--o{ study_groups : creates
+    users }o--o{ group_members : joins
+    
+    %% Course and task relationships
+    courses ||--o{ tasks : contains
+    tasks ||--o{ reminders : has
+    tasks }o--|| study_groups : belongs_to
+    
+    %% Role management
+    roles ||--o{ user_roles : assigned_to
+    
+    %% Study group relationships  
+    study_groups ||--o{ group_members : has
 
-### Group Members
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| group_id | integer | Foreign key → study_groups.id |
-| user_id | integer | Foreign key → users.id |
-| joined_at | timestamp | When user joined the group |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+    %% Table definitions
+    users {
+        BIGINT id PK
+        VARCHAR name
+        VARCHAR email UK
+        VARCHAR password
+        VARCHAR avatar_url "nullable"
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-### Reminders
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| task_id | integer | Foreign key → tasks.id |
-| reminder_offset | varchar | Offset (e.g., "3 days", "1 day") |
-| sent_status | varchar | Status (pending/sent/failed) |
-| scheduled_for | timestamp | When to send reminder |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+    courses {
+        BIGINT id PK
+        VARCHAR course_code
+        VARCHAR course_name
+        VARCHAR color
+        BIGINT user_id FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-### Roles
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| name | varchar | Role name (student/admin) |
-| description | varchar | Role description |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+    tasks {
+        BIGINT id PK
+        VARCHAR title
+        TEXT description "nullable"
+        DATE due_date
+        TIME due_time "nullable"
+        VARCHAR priority "low/medium/high/urgent"
+        VARCHAR status "not_started/in_progress/completed"
+        DECIMAL estimated_hours "nullable"
+        BIGINT course_id FK "nullable"
+        BIGINT user_id FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-### User Roles
-| Column | Type | Description |
-|--------|------|-------------|
-| id | integer | Primary key |
-| user_id | integer | Foreign key → users.id |
-| role_id | integer | Foreign key → roles.id |
-| created_at | timestamp | Record creation time |
-| updated_at | timestamp | Record last update time |
+    study_groups {
+        BIGINT id PK
+        VARCHAR group_name
+        BIGINT task_id FK "nullable"
+        BIGINT created_by FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-## 🔗 Relationships
+    group_members {
+        BIGINT id PK
+        BIGINT group_id FK
+        BIGINT user_id FK
+        TIMESTAMP joined_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-- **Users** → have many **Courses**
-- **Users** → have many **Tasks**
-- **Users** → have many **Reminders**
-- **Users** → belong to many **Study Groups** (through group_members)
-- **Users** → belong to many **Roles** (through user_roles)
-- **Courses** → have many **Tasks**
-- **Tasks** → have many **Reminders**
-- **Tasks** → have one **Study Group**
-- **Study Groups** → have many **Users** (through group_members)
+    reminders {
+        BIGINT id PK
+        BIGINT task_id FK
+        VARCHAR reminder_offset "e.g., '3 days', '1 day'"
+        VARCHAR sent_status "pending/sent/failed"
+        TIMESTAMP scheduled_for
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-## 📊 Visual Schema
+    roles {
+        BIGINT id PK
+        VARCHAR name UK "admin/student"
+        VARCHAR description "nullable"
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 
-For a visual representation of the database schema, check the `Database schema IAP Project.pdf` file in the project documentation.
+    user_roles {
+        BIGINT id PK
+        BIGINT user_id FK
+        BIGINT role_id FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
