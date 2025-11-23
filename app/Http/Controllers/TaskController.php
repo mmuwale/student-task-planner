@@ -159,4 +159,15 @@ class TaskController extends Controller
         $task->save();
         return response()->json(['message' => 'Reminder cleared', 'task' => $task]);
     }
+
+    public function completed()
+    {
+        $tasks = Task::with('course')
+            ->where('status', 'completed')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return view('tasks.completed', compact('tasks'));
+    }
+
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseResourceController;
+use App\Http\Controllers\CourseResourceController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Mail;
 
@@ -23,10 +24,6 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Initial code routes
-Route::apiResource('tasks', TaskController::class);
-Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
-
 // dashboard
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('dashboard/summary', [DashboardController::class, 'summary']);
@@ -43,21 +40,14 @@ Route::get('profile', function () {
     return view('profile.index');
 })->name('profile');
 
-require __DIR__.'/tasks.php';
 
-Route::get('tasks/create', function () {
-    return view('tasks.create');
-})->name('tasks.create');
-Route::get('tasks', function () {
-    return view('tasks.index');
-})->name('tasks.index');
-Route::get('study-group', function () {
-    return view('study-group.index');
-})->name('study-group');
-
-Route::get('study-group/create', function () {
-    return view('study-group.create');
-})->name('study-group.create');
+    // Study Groups
+    Route::get('study-group', function () {
+        return view('study-group.index');
+    })->name('study-group.index');
+    Route::get('study-group/create', function () {
+        return view('study-group.create');
+    })->name('study-group.create');
 
     // Calendar
     require __DIR__.'/calendar.php';
@@ -71,6 +61,14 @@ Route::get('reminders/create', function () {
     return view('reminders.create');
 })->name('reminders.create');
 
+Route::get('my-projects', function () {
+    return view('projects.index');
+})->name('my-projects');
+
+Route::get('my-projects/create', function () {
+    return view('projects.create');
+})->name('my-projects.create');
+
 Route::get('settings', function () {
     return view('settings.index');
 })->name('settings');
@@ -78,3 +76,24 @@ Route::get('settings', function () {
 Route::get('settings/create', function () {
     return view('settings.create');
 })->name('settings.create');
+
+
+// better routes
+Route::get('/courses/{course}', [CourseController::class, 'show'])
+     ->name('courses.show');
+
+Route::resource('courses', CourseController::class)->only(['index','show']);
+
+Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
+    ->name('courses.resources.store');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+Route::get('/tasks/completed', [TaskController::class, 'completed'])
+    ->name('tasks.completed');
+
+
+Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update']);
+
+
+    
