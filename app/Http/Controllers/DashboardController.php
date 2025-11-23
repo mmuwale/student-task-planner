@@ -14,8 +14,56 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // You can customize the view name as needed
-        return view('dashboard');
+        $now = Carbon::now();
+        $upcomingTasks = Task::where('due_date', '>=', $now)
+            ->where('due_date', '<=', $now->copy()->addDays(7))
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        // Build $weekDays array for daily cards
+        $weekDays = [];
+        for ($i = 0; $i < 7; $i++) {
+            $date = $now->copy()->addDays($i);
+            $tasks = Task::whereDate('due_date', $date->toDateString())->get()->map(function($task) {
+                return [
+                    'title' => $task->title,
+                    'color' => match($task->priority) {
+                        'high' => 'red',
+                        'medium' => 'blue',
+                        'low' => 'green',
+                        default => 'purple',
+                    }
+                ];
+            });
+            $courses = Course::whereHas('tasks', function($q) use ($date) {
+                $q->whereDate('due_date', $date->toDateString());
+            })->pluck('name')->toArray();
+            $weekDays[] = [
+                'name' => $date->format('l'),
+                'date' => $date->format('M j'),
+                'tasks' => $tasks,
+                'courses' => $courses,
+            ];
+        }
+
+        // Progress variables
+        $totalTasks = Task::count();
+        $completedTasks = Task::where('status', 'completed')->count();
+        $completionRate = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+
+        // Leaderboard: users sorted by their completion rate
+        $leaderboard = \App\Models\User::withCount(['tasks as completed_tasks_count' => function($q) {
+                $q->where('status', 'completed');
+            }, 'tasks as total_tasks_count'])
+            ->get()
+            ->map(function($user) {
+                $rate = $user->total_tasks_count > 0 ? round(($user->completed_tasks_count / $user->total_tasks_count) * 100) : 0;
+                $user->completion_rate = $rate;
+                return $user;
+            })->sortByDesc('completion_rate')->values();
+
+        // Pass all variables to the dashboard view
+        return view('dashboard', compact('upcomingTasks', 'weekDays', 'completionRate', 'completedTasks', 'totalTasks', 'leaderboard'));
     }
     public function summary(Request $request)
     {
