@@ -15462,6 +15462,11 @@ html.maximized-card {
   overflow: visible;
 }
 
+.sidebar-menu .active > a {
+    background: #800020;
+    color: #fff;
+}
+
 /* Enhanced Error States - WCAG 3.3.1: Error Identification */
 .form-control.is-invalid {
   border-color: var(--bs-danger);
