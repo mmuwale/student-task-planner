@@ -740,18 +740,13 @@
                     <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
                     <span>Student Task Planner</span>
                 </div>
-                <div class="nav">
-                    <a href="{{ route('courses') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}">Courses</a>
-                    <a href="{{ route('tasks.index') }}" class="{{ request()->routeIs('tasks.*') ? 'active' : '' }}">Tasks</a>
-                </div>
-                
                 <!-- User Menu / Auth Links -->
                 @if(Auth::check())
                     <div class="user-menu" id="userMenu">
                         <div class="user-avatar" id="userAvatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
                         <span>Welcome, {{ Auth::user()->name }}!</span>
                         <div id="avatarDropdown" class="avatar-dropdown">
-                            <a href="{{ route('profile.edit') }}">Profile</a>
+                            <a href="{{ route('profile') }}">Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit">Logout</button>
