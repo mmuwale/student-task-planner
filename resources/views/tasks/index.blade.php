@@ -1,24 +1,193 @@
 @extends('layouts.app')
 
 @section('title', 'Tasks')
-@section('page-title', 'Tasks')
+@section('page_title', 'Tasks')
+@section('page_subtitle', 'Inbox view of all tasks')
+
 @section('content')
-<div class="card" style="width: 100%; max-width: 800px; min-height: 350px; margin: 48px auto; display: flex; flex-direction: column; justify-content: flex-start;">
-    <h2 style="margin-bottom: 24px; color: #3d1f2e;">Tasks</h2>
-    <form method="POST" action="#" style="margin-bottom: 32px;">
-        @csrf
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-                <label for="task-title" style="font-weight: 600; color: #683844;">Task Title</label>
-                <input type="text" id="task-title" name="title" class="form-control" style="padding: 10px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px;">
+<div
+    x-data="{
+        showModal: false,
+        activeTask: null,
+        openTask(task) {
+            this.activeTask = JSON.parse(JSON.stringify(task));
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+        }
+    }"
+    class="relative"
+>
+    {{-- TASK LIST --}}
+    <div class="bg-white border border-slate-200 rounded-xl shadow-sm">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+            <div class="flex items-center gap-3 text-xs">
+                <span class="font-semibold text-slate-700">Inbox</span>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-                <label for="task-desc" style="font-weight: 600; color: #683844;">Description</label>
-                <textarea id="task-desc" name="description" class="form-control" style="padding: 10px; border-radius: 8px; border: 1px solid #ceb2bd; background: #f9f2e8; color: #3d1f2e; font-size: 15px; min-height: 80px;"></textarea>
-            </div>
-            <button type="submit" style="margin-top: 12px; background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%); color: #fff; border: none; border-radius: 8px; padding: 12px 0; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s;">Add Task</button>
         </div>
-    </form>
-    <div style="margin-top: 24px; flex: 1; color: #8b6f63; text-align: center;">Your tasks will appear here.</div>
+
+        <div class="p-5 text-xs">
+            @forelse($tasks as $task)
+                <div
+                    class="flex items-center gap-4 py-3 border-b border-slate-100 last:border-0 cursor-pointer hover:bg-slate-50"
+                    @click="openTask(@js($task))"
+                >
+                    {{-- Checkbox column (click does not trigger modal) --}}
+                    <div class="pl-1" @click.stop>
+                        <form
+                            method="POST"
+                            action="{{ route('tasks.update', $task) }}"
+                            x-ref="completeForm{{$task->id}}"
+                            @change="$refs.completeForm{{$task->id}}.submit()"
+                        >
+                            @csrf
+                            @method('PUT')
+
+                            <input type="hidden" name="title" value="{{ $task->title }}">
+                            <input type="hidden" name="notes" value="{{ $task->notes }}">
+                            <input type="hidden" name="due_date" value="{{ optional($task->due_date)->format('Y-m-d') }}">
+                            <input type="hidden" name="priority" value="{{ $task->priority }}">
+                            <input type="hidden" name="status" value="completed">
+
+                            <input
+                                type="checkbox"
+                                class="h-4 w-4 rounded border-slate-300 text-[#800020] focus:ring-[#800020]"
+                            >
+                        </form>
+                    </div>
+
+                    {{-- Main clickable area --}}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[14px] font-semibold text-slate-800 truncate">
+                            {{ $task->title }}
+                        </p>
+                        <p class="text-[11px] text-slate-500 truncate">
+                            {{ optional($task->course)->name }} ·
+                            Due: {{ optional($task->due_date)->format('M d, Y') ?? 'No date' }}
+                        </p>
+                    </div>
+
+                    {{-- Status Pill --}}
+                    <div class="flex items-center">
+                        <span class="px-2 py-0.5 rounded-full bg-[#fde6ee] text-[#800020] text-[10px]">
+                            {{ ucfirst($task->status) }}
+                        </span>
+                    </div>
+                </div>
+            @empty
+                <p class="text-[12px] text-slate-500">No tasks found.</p>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- CENTERED MODAL --}}
+    <div
+        x-show="showModal"
+        x-cloak
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        x-transition.opacity
+        @click.self="closeModal()"
+    >
+        <div
+            class="bg-white w-full max-w-xl rounded-lg shadow-2xl p-6 relative text-slate-800"
+            x-transition.scale
+        >
+            {{-- CLOSE BUTTON --}}
+            <button
+                @click="closeModal()"
+                class="absolute top-2 right-3 text-slate-500 hover:text-slate-700 text-xl"
+            >&times;</button>
+
+            {{-- HEADER --}}
+            <h2 class="text-lg font-semibold mb-2">
+                Edit Task
+            </h2>
+            <p class="text-xs text-slate-500 mb-4" x-text="activeTask?.course?.name ?? 'No Course'"></p>
+
+            {{-- EDIT FORM --}}
+            <form
+                method="POST"
+                :action="activeTask ? '{{ url('/tasks') }}/' + activeTask.id : '#'"
+                class="space-y-4 text-sm"
+            >
+                @csrf
+                @method('PUT')
+
+                {{-- TITLE --}}
+                <div>
+                    <label class="text-xs font-semibold text-slate-700">Title</label>
+                    <input
+                        type="text"
+                        name="title"
+                        class="w-full border border-slate-300 rounded-md px-3 py-2 mt-1"
+                        x-model="activeTask.title"
+                    >
+                </div>
+
+                {{-- NOTES --}}
+                <div>
+                    <label class="text-xs font-semibold text-slate-700">Notes</label>
+                    <textarea
+                        name="notes"
+                        class="w-full border border-slate-300 rounded-md px-3 py-2 mt-1 text-xs"
+                        rows="3"
+                        x-model="activeTask.notes"
+                    ></textarea>
+                </div>
+
+                {{-- DATE --}}
+                <div>
+                    <label class="text-xs font-semibold text-slate-700">Due Date</label>
+                    <input
+                        type="date"
+                        name="due_date"
+                        class="w-full border border-slate-300 rounded-md px-3 py-2 mt-1"
+                        x-model="activeTask.due_date"
+                    >
+                </div>
+
+                {{-- PRIORITY --}}
+                <div>
+                    <label class="text-xs font-semibold text-slate-700">Priority</label>
+                    <select
+                        name="priority"
+                        class="w-full border border-slate-300 rounded-md px-3 py-2 mt-1"
+                        x-model="activeTask.priority"
+                    >
+                        <option value="P1">P1</option>
+                        <option value="P2">P2</option>
+                        <option value="P3">P3</option>
+                        <option value="P4">P4</option>
+                    </select>
+                </div>
+
+                {{-- STATUS --}}
+                <div>
+                    <label class="text-xs font-semibold text-slate-700">Status</label>
+                    <select
+                        name="status"
+                        class="w-full border border-slate-300 rounded-md px-3 py-2 mt-1"
+                        x-model="activeTask.status"
+                    >
+                        <option value="todo">To Do</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+                {{-- SAVE BUTTON --}}
+                <div class="pt-2">
+                    <button
+                        type="submit"
+                        class="w-full bg-[#800020] text-white py-2 rounded-md text-sm hover:bg-[#a22640]"
+                    >
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection

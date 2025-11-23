@@ -12,5 +12,12 @@
         <li class="{{ request()->routeIs('courses') ? 'active' : '' }}">
             <a href="{{ route('courses') }}">Courses</a>
         </li>
+        <li>    
+            <a href="{{ route('tasks.completed') }}"
+                class="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-[#5e1830] text-xs">
+                <span class="text-[13px]">✔</span>
+                <span x-show="sidebarOpen">Completed Tasks</span>
+            </a>
+        </li>
     </ul>
 </aside>

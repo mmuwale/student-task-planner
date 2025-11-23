@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseResourceController;
 use App\Http\Controllers\ProfileController;
 
 // Existing routes
@@ -21,10 +22,6 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Initial code routes
-Route::apiResource('tasks', TaskController::class);
-Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
-
 // dashboard
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('dashboard/summary', [DashboardController::class, 'summary']);
@@ -41,13 +38,6 @@ Route::get('profile', function () {
     return view('profile.index');
 })->name('profile');
 
-Route::get('tasks', function () {
-    return view('tasks.index');
-})->name('tasks');
-
-Route::get('tasks/create', function () {
-    return view('tasks.create');
-})->name('tasks.create');
 
 Route::get('projects', function () {
     return view('projects.index');
@@ -96,3 +86,24 @@ Route::get('settings', function () {
 Route::get('settings/create', function () {
     return view('settings.create');
 })->name('settings.create');
+
+
+// better routes
+Route::get('/courses/{course}', [CourseController::class, 'show'])
+     ->name('courses.show');
+
+Route::resource('courses', CourseController::class)->only(['index','show']);
+
+Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
+    ->name('courses.resources.store');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+Route::get('/tasks/completed', [TaskController::class, 'completed'])
+    ->name('tasks.completed');
+
+
+Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update']);
+
+
+    

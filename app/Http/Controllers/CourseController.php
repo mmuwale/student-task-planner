@@ -9,7 +9,10 @@ class CourseController extends Controller
 {
     public function index()
     {
-        return Course::all();
+        $courses = Course::orderBy('name')->get();
+        $completedCourses = Course::where('is_completed', true)->orderBy('name')->get();
+
+        return view('courses.index', compact('courses', 'completedCourses'));
     }
 
     public function store(Request $request)
@@ -17,9 +20,29 @@ class CourseController extends Controller
         return Course::create($request->all());
     }
 
-    public function show(Course $course)
+   public function show(Course $course)
     {
-        return $course;
+        $upcomingTasks = $course->tasks()
+            ->where('status', '!=', 'completed')
+            ->orderBy('due_date')
+            ->get();
+
+        $completedTasks = $course->tasks()
+            ->where('status', 'completed')
+            ->orderByDesc('due_date')
+            ->get();
+
+        $resources = $course->resources()->latest()->get();
+
+        $completedCourses = Course::where('is_completed', true)->orderBy('name')->get();
+
+        return view('courses.show', compact(
+            'course',
+            'upcomingTasks',
+            'completedTasks',
+            'resources',
+            'completedCourses'
+        ));
     }
 
     public function update(Request $request, Course $course)
