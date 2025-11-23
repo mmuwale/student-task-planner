@@ -227,16 +227,13 @@
             background: rgba(241, 230, 210, 0.25);
             border-bottom: 3px solid #f1e6d2;
         }
-        .user-menu.active {
-            border-bottom: none !important;
-            padding-bottom: 0 !important;
-        }
 
         .nav a:hover {
             background: rgba(241, 230, 210, 0.2);
             transform: translateY(-2px);
         }
 
+        /* User Menu Styles */
         .user-menu {
             color: #f0f6f7;
             font-size: 16px;
@@ -244,11 +241,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            position: relative;
+            cursor: pointer;
         }
 
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             background: #f1e6d2;
             color: #891d1a;
             border-radius: 50%;
@@ -256,6 +255,95 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(241, 230, 210, 0.3);
+        }
+
+        .avatar-dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(137, 29, 26, 0.15);
+            min-width: 200px;
+            z-index: 1001;
+            border: 1px solid #f1e6d2;
+            overflow: hidden;
+        }
+
+        .avatar-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar-dropdown a {
+            display: block;
+            padding: 14px 20px;
+            color: #210706;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid #f1e6d2;
+            transition: background 0.2s;
+        }
+
+        .avatar-dropdown a:hover {
+            background: #f1e6d2;
+            color: #891d1a;
+        }
+
+        .avatar-dropdown form {
+            margin: 0;
+        }
+
+        .avatar-dropdown button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #891d1a;
+            font-weight: 600;
+            padding: 14px 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 16px;
+        }
+
+        .avatar-dropdown button:hover {
+            background: #f1e6d2;
+        }
+
+        /* Login/Logout Links */
+        .auth-links {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .auth-links a {
+            color: #f0f6f7;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .auth-links a:hover {
+            background: rgba(241, 230, 210, 0.2);
+            transform: translateY(-2px);
         }
 
         /* Main Grid */
@@ -615,6 +703,19 @@
             .card {
                 padding: 20px;
             }
+
+            .user-menu {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .avatar-dropdown {
+                position: fixed;
+                top: auto;
+                right: 20px;
+                left: 20px;
+                bottom: 20px;
+            }
         }
     </style>
 </head>
@@ -632,27 +733,32 @@
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Main Content -->
-    <div style="flex:1; display: flex; flex-direction: column;">
+        <div style="flex:1; display: flex; flex-direction: column;">
             <!-- Enhanced Header -->
             <div class="header" id="mainHeader">
                 <div class="logo" id="headerLogo">
                     <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
                     <span>Student Task Planner</span>
                 </div>
-                <div class="nav">
-                    <a href="{{ route('courses') }}" class="{{ request()->routeIs('courses.*') ? 'active' : '' }}">Courses</a>
-                    <a href="{{ route('tasks') }}" class="{{ request()->routeIs('tasks.*') ? 'active' : '' }}">Tasks</a>
-                    <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">Profile</a>
-                </div>
-                <div class="user-menu">
-                    @if(Auth::check())
-                        <div class="user-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+                <!-- User Menu / Auth Links -->
+                @if(Auth::check())
+                    <div class="user-menu" id="userMenu">
+                        <div class="user-avatar" id="userAvatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
                         <span>Welcome, {{ Auth::user()->name }}!</span>
-                    @else
-                        <div class="user-avatar">?</div>
-                        <span>Welcome, Guest!</span>
-                    @endif
-                </div>
+                        <div id="avatarDropdown" class="avatar-dropdown">
+                            <a href="{{ route('profile') }}">Profile</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <div class="auth-links">
+                        <a href="{{ route('login') }}">Login</a>
+                        <a href="{{ route('register') }}">Register</a>
+                    </div>
+                @endif
             </div>
 
             <!-- Main Grid and Content -->
@@ -758,36 +864,69 @@
             const mainGrid = document.getElementById('mainGrid');
             const sidebarToggle = document.getElementById('sidebarToggle');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const userAvatar = document.getElementById('userAvatar');
+            const avatarDropdown = document.getElementById('avatarDropdown');
+            const userMenu = document.getElementById('userMenu');
             
             let isSidebarHidden = false;
 
             // Header logo toggles sidebar and expands header
-            headerLogo.addEventListener('click', function() {
-                isSidebarHidden = !isSidebarHidden;
-                
-                if (isSidebarHidden) {
-                    // Hide sidebar and expand header
-                    sidebar.classList.add('hide');
-                    header.classList.add('expanded');
-                    if (mainGrid) mainGrid.classList.add('expanded');
-                } else {
-                    // Show sidebar and collapse header
-                    sidebar.classList.remove('hide');
-                    header.classList.remove('expanded');
-                    if (mainGrid) mainGrid.classList.remove('expanded');
-                }
-            });
+            if (headerLogo) {
+                headerLogo.addEventListener('click', function() {
+                    isSidebarHidden = !isSidebarHidden;
+                    
+                    if (isSidebarHidden) {
+                        // Hide sidebar and expand header
+                        sidebar.classList.add('hide');
+                        header.classList.add('expanded');
+                        if (mainGrid) mainGrid.classList.add('expanded');
+                    } else {
+                        // Show sidebar and collapse header
+                        sidebar.classList.remove('hide');
+                        header.classList.remove('expanded');
+                        if (mainGrid) mainGrid.classList.remove('expanded');
+                    }
+                });
+            }
+
+            // Avatar dropdown functionality
+            if (userAvatar && avatarDropdown) {
+                userAvatar.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    avatarDropdown.classList.toggle('show');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (avatarDropdown && avatarDropdown.classList.contains('show')) {
+                        if (!userMenu.contains(e.target)) {
+                            avatarDropdown.classList.remove('show');
+                        }
+                    }
+                });
+
+                // Close dropdown on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && avatarDropdown && avatarDropdown.classList.contains('show')) {
+                        avatarDropdown.classList.remove('show');
+                    }
+                });
+            }
 
             // Mobile sidebar toggle
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('open');
-                sidebarOverlay.classList.toggle('open');
-            });
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('open');
+                    sidebarOverlay.classList.toggle('open');
+                });
+            }
             
-            sidebarOverlay.addEventListener('click', function() {
-                sidebar.classList.remove('open');
-                sidebarOverlay.classList.remove('open');
-            });
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('open');
+                });
+            }
 
             // Task completion animation
             document.querySelectorAll('.task-checkbox').forEach(checkbox => {
@@ -807,16 +946,16 @@
             function handleResize() {
                 if (window.innerWidth >= 1025) {
                     // Desktop: ensure proper state
-                    sidebar.classList.remove('open');
-                    sidebarOverlay.classList.remove('open');
+                    if (sidebar) sidebar.classList.remove('open');
+                    if (sidebarOverlay) sidebarOverlay.classList.remove('open');
                     if (!isSidebarHidden) {
-                        sidebar.classList.remove('hide');
-                        header.classList.remove('expanded');
+                        if (sidebar) sidebar.classList.remove('hide');
+                        if (header) header.classList.remove('expanded');
                         if (mainGrid) mainGrid.classList.remove('expanded');
                     }
                 } else {
                     // Mobile: reset expanded state
-                    header.classList.remove('expanded');
+                    if (header) header.classList.remove('expanded');
                     if (mainGrid) mainGrid.classList.remove('expanded');
                 }
             }
