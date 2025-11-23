@@ -38,6 +38,11 @@ Route::get('profile', function () {
     return view('profile.index');
 })->name('profile');
 
+require __DIR__.'/tasks.php';
+
+Route::get('tasks/create', function () {
+    return view('tasks.create');
+})->name('tasks.create');
 
 Route::get('projects', function () {
     return view('projects.index');
@@ -55,17 +60,13 @@ Route::get('study-group/create', function () {
     return view('study-group.create');
 })->name('study-group.create');
 
-Route::get('calendar', function () {
-    return view('calendar.index');
-})->name('calendar');
+require __DIR__.'/calendar.php';
 
 Route::get('calendar/create', function () {
     return view('calendar.create');
 })->name('calendar.create');
 
-Route::get('reminders', function () {
-    return view('reminders.index');
-})->name('reminders');
+require __DIR__.'/reminders.php';
 
 Route::get('reminders/create', function () {
     return view('reminders.create');

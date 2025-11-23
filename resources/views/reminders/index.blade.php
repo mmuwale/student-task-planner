@@ -15,18 +15,11 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    // Example: Replace with your actual reminders from the database
-                    $reminders = [
-                        ['subject' => 'Assignment Due', 'message' => 'Your math assignment is due tomorrow.', 'sent_at' => '2025-11-22 08:00'],
-                        ['subject' => 'Group Meeting', 'message' => 'Study group meeting at 5pm.', 'sent_at' => '2025-11-21 17:00'],
-                    ];
-                @endphp
                 @forelse($reminders as $reminder)
                     <tr style="border-bottom: 1px solid #e8dcd0;">
-                        <td style="padding: 12px;">{{ $reminder['subject'] }}</td>
-                        <td style="padding: 12px;">{{ $reminder['message'] }}</td>
-                        <td style="padding: 12px;">{{ $reminder['sent_at'] }}</td>
+                        <td style="padding: 12px;">{{ $reminder->subject ?? '-' }}</td>
+                        <td style="padding: 12px;">{{ $reminder->message ?? '-' }}</td>
+                        <td style="padding: 12px;">{{ $reminder->created_at ? $reminder->created_at->format('Y-m-d H:i') : '-' }}</td>
                     </tr>
                 @empty
                     <tr>
