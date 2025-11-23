@@ -7,51 +7,62 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Mail;
 
-// Public routes - redirect to login if not authenticated
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Existing routes
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-// Authentication routes (from auth.php)
-require __DIR__.'/auth.php';
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Protected routes - require authentication
-Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
-
-    // Profile
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-    // Courses - Web Routes (return views)
-    Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-    Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
-    Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
-    Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
-    Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-    Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
-    Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+require __DIR__.'/auth.php';
 
-    // Tasks - Web Routes (return views)
-    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
-    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-    Route::post('/tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder'])->name('tasks.clear-reminder');
+// Initial code routes
+Route::apiResource('tasks', TaskController::class);
+Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
 
-    // Study Groups
-    Route::get('study-group', function () {
-        return view('study-group.index');
-    })->name('study-group.index');
-    Route::get('study-group/create', function () {
-        return view('study-group.create');
-    })->name('study-group.create');
+// dashboard
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('dashboard/summary', [DashboardController::class, 'summary']);
+Route::get('courses', [CourseController::class, 'index'])->name('courses');
+
+Route::get('courses', function () {
+    return view('courses.index');
+})->name('courses');
+Route::get('courses/create', function () {
+    return view('courses.create');
+})->name('courses.create');
+
+Route::get('profile', function () {
+    return view('profile.index');
+})->name('profile');
+
+require __DIR__.'/tasks.php';
+
+Route::get('tasks/create', function () {
+    return view('tasks.create');
+})->name('tasks.create');
+
+Route::get('projects', function () {
+    return view('projects.index');
+})->name('projects');
+
+Route::get('projects/create', function () {
+    return view('projects.create');
+})->name('projects.create');
+
+Route::get('study-group', function () {
+    return view('study-group.index');
+})->name('study-group');
+
+Route::get('study-group/create', function () {
+    return view('study-group.create');
+})->name('study-group.create');
 
     // Calendar
     require __DIR__.'/calendar.php';
@@ -72,7 +83,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/create', function () {
         return view('settings.create');
     })->name('settings.create');
-});
 
 // Test email route (temporary)
 Route::get('/test-email', function () {
