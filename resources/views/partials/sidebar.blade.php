@@ -7,7 +7,6 @@
         <li><a href="{{ route('tasks.create') }}">Add new task</a></li>
         <li><a href="{{ route('calendar') }}">Calendar</a></li>
         <li><a href="{{ route('reminders') }}">Reminders</a></li>
-        <li><a href="{{ route('projects') }}">My Projects</a></li>
         <li><a href="{{ route('settings') }}">Settings</a></li>
         <li class="{{ request()->routeIs('courses') ? 'active' : '' }}">
             <a href="{{ route('courses') }}">Courses</a>
