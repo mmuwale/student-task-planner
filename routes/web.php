@@ -26,23 +26,29 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Courses
-    Route::get('/courses', [CourseController::class, 'index'])->name('courses');
-    Route::get('/courses/create', function () {
-        return view('courses.create');
-    })->name('courses.create');
+    // Courses - Web Routes (return views)
+    Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
+    Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
-    // Tasks
-    Route::apiResource('tasks', TaskController::class);
-    Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
-    Route::get('tasks/create', function () {
-        return view('tasks.create');
-    })->name('tasks.create');
+    // Tasks - Web Routes (return views)
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::post('/tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder'])->name('tasks.clear-reminder');
 
     // Study Groups
     Route::get('study-group', function () {
         return view('study-group.index');
-    })->name('study-group');
+    })->name('study-group.index');
     Route::get('study-group/create', function () {
         return view('study-group.create');
     })->name('study-group.create');
@@ -62,13 +68,13 @@ Route::middleware(['auth'])->group(function () {
     // Settings
     Route::get('settings', function () {
         return view('settings.index');
-    })->name('settings');
+    })->name('settings.index');
     Route::get('settings/create', function () {
         return view('settings.create');
     })->name('settings.create');
 });
 
-// Add this to your web.php temporarily for testing
+// Test email route (temporary)
 Route::get('/test-email', function () {
     try {
         Mail::raw('Test email from Student Task Planner', function ($message) {
