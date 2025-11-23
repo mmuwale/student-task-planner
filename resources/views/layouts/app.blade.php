@@ -26,10 +26,23 @@
             background: linear-gradient(180deg, #210706 0%, #391016 100%);
             z-index: 1000;
             transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 2px 0 16px rgba(0,0,0,0.08);
             padding-top: 32px;
             gap: 12px;
+            overflow: hidden;
+        }
+
+        .sidebar.hide {
+            transform: translateX(-100%);
+            width: 0;
+            opacity: 0;
+        }
+
+        .sidebar:not(.hide) {
+            transform: translateX(0);
+            width: 260px;
+            opacity: 1;
         }
 
         .sidebar-item {
@@ -42,6 +55,8 @@
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
         }
         .sidebar.open {
             transform: translateX(0);
@@ -91,12 +106,25 @@
                 height: 100vh;
                 width: 260px;
                 box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+                opacity: 1 !important;
             }
+            
+            .sidebar.hide {
+                width: 0 !important;
+                opacity: 0 !important;
+                transform: translateX(-100%) !important;
+            }
+            
             .sidebar-overlay, .sidebar-toggle-btn {
                 display: none !important;
             }
             .main-grid {
                 margin-left: 260px;
+                transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .main-grid.expanded {
+                margin-left: 0;
             }
         }
         @media (max-width: 1024px) {
@@ -132,6 +160,16 @@
             background: linear-gradient(135deg, #891d1a 0%, #a82a26 100%);
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(137, 29, 26, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 998;
+        }
+
+        .header.expanded {
+            margin-left: 0;
+            width: 100%;
+            transform: scale(1.02);
+            box-shadow: 0 12px 48px rgba(137, 29, 26, 0.3);
         }
 
         .logo {
@@ -141,6 +179,15 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+        
+        .logo:hover {
+            background: rgba(241, 230, 210, 0.1);
+            transform: scale(1.05);
         }
         
         .logo-icon {
@@ -153,6 +200,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(15deg) scale(1.1);
         }
 
         .nav {
@@ -212,6 +264,7 @@
             grid-template-columns: 1fr 350px;
             gap: 24px;
             margin-bottom: 2px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Left Column */
@@ -581,8 +634,8 @@
         <!-- Main Content -->
     <div style="flex:1; display: flex; flex-direction: column;">
             <!-- Enhanced Header -->
-            <div class="header">
-                <div class="logo">
+            <div class="header" id="mainHeader">
+                <div class="logo" id="headerLogo">
                     <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
                     <span>Student Task Planner</span>
                 </div>
@@ -604,7 +657,7 @@
 
             <!-- Main Grid and Content -->
             @if (request()->is('/'))
-                <div class="main-grid">
+                <div class="main-grid" id="mainGrid">
                     <!-- Left Column -->
                     <div class="left-column">
                         <!-- Upcoming Tasks -->
@@ -698,32 +751,78 @@
     </div>
 
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('open');
-        });
-        
-        sidebarOverlay.addEventListener('click', function() {
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('open');
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const headerLogo = document.getElementById('headerLogo');
+            const sidebar = document.getElementById('sidebar');
+            const header = document.getElementById('mainHeader');
+            const mainGrid = document.getElementById('mainGrid');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            let isSidebarHidden = false;
 
-        // Task completion animation
-        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const taskItem = this.closest('.task-item');
-                if (this.checked) {
-                    taskItem.style.opacity = '0.7';
-                    taskItem.style.textDecoration = 'line-through';
+            // Header logo toggles sidebar and expands header
+            headerLogo.addEventListener('click', function() {
+                isSidebarHidden = !isSidebarHidden;
+                
+                if (isSidebarHidden) {
+                    // Hide sidebar and expand header
+                    sidebar.classList.add('hide');
+                    header.classList.add('expanded');
+                    if (mainGrid) mainGrid.classList.add('expanded');
                 } else {
-                    taskItem.style.opacity = '1';
-                    taskItem.style.textDecoration = 'none';
+                    // Show sidebar and collapse header
+                    sidebar.classList.remove('hide');
+                    header.classList.remove('expanded');
+                    if (mainGrid) mainGrid.classList.remove('expanded');
                 }
             });
+
+            // Mobile sidebar toggle
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                sidebarOverlay.classList.toggle('open');
+            });
+            
+            sidebarOverlay.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('open');
+            });
+
+            // Task completion animation
+            document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const taskItem = this.closest('.task-item');
+                    if (this.checked) {
+                        taskItem.style.opacity = '0.7';
+                        taskItem.style.textDecoration = 'line-through';
+                    } else {
+                        taskItem.style.opacity = '1';
+                        taskItem.style.textDecoration = 'none';
+                    }
+                });
+            });
+
+            // Handle responsive behavior
+            function handleResize() {
+                if (window.innerWidth >= 1025) {
+                    // Desktop: ensure proper state
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.remove('open');
+                    if (!isSidebarHidden) {
+                        sidebar.classList.remove('hide');
+                        header.classList.remove('expanded');
+                        if (mainGrid) mainGrid.classList.remove('expanded');
+                    }
+                } else {
+                    // Mobile: reset expanded state
+                    header.classList.remove('expanded');
+                    if (mainGrid) mainGrid.classList.remove('expanded');
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial check
         });
     </script>
 
