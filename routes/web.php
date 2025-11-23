@@ -40,21 +40,39 @@ Route::get('profile', function () {
     return view('profile.index');
 })->name('profile');
 
+require __DIR__.'/tasks.php';
 
-    // Study Groups
-    Route::get('study-group', function () {
-        return view('study-group.index');
-    })->name('study-group.index');
-    Route::get('study-group/create', function () {
-        return view('study-group.create');
-    })->name('study-group.create');
+Route::get('tasks/create', function () {
+    return view('tasks.create');
+})->name('tasks.create');
 
-    // Calendar
-    require __DIR__.'/calendar.php';
-    Route::get('calendar/create', function () {
-        return view('calendar.create');
-    })->name('calendar.create');
+Route::get('projects', function () {
+    return view('projects.index');
+})->name('projects');
 
+Route::get('projects/create', function () {
+    return view('projects.create');
+})->name('projects.create');
+
+Route::get('study-group', function () {
+    return view('study-group.index');
+})->name('study-group');
+
+Route::get('study-group/create', function () {
+    return view('study-group.create');
+})->name('study-group.create');
+
+require __DIR__.'/calendar.php';
+
+Route::get('calendar/create', function () {
+    return view('calendar.create');
+})->name('calendar.create');
+
+require __DIR__.'/reminders.php';
+
+Route::get('reminders/create', function () {
+    return view('reminders.create');
+})->name('reminders.create');
 require __DIR__.'/reminders.php';
 
 Route::get('reminders/create', function () {
