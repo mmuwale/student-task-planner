@@ -735,31 +735,7 @@
         <!-- Main Content -->
         <div style="flex:1; display: flex; flex-direction: column;">
             <!-- Enhanced Header -->
-            <div class="header" id="mainHeader">
-                <div class="logo" id="headerLogo">
-                    <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
-                    <span>Student Task Planner</span>
-                </div>
-                <!-- User Menu / Auth Links -->
-                @if(Auth::check())
-                    <div class="user-menu" id="userMenu">
-                        <div class="user-avatar" id="userAvatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                        <span>Welcome, {{ Auth::user()->name }}!</span>
-                        <div id="avatarDropdown" class="avatar-dropdown">
-                            <a href="{{ route('profile') }}">Profile</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                @else
-                    <div class="auth-links">
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    </div>
-                @endif
-            </div>
+            @include('layouts.partials.header')
 
             <!-- Main Grid and Content -->
             @if (request()->is('/'))
@@ -815,22 +791,7 @@
                     <!-- Right Sidebar -->
                     <div style="display: flex; flex-direction: column; gap: 24px;">
                         <!-- Progress Card -->
-                        <div class="card progress-card">
-                            <h2 class="card-title">
-                                <i class="fas fa-chart-line"></i>
-                                PROGRESS
-                            </h2>
-                            <div class="progress-container">
-                                <div class="progress-percent">{{ $completionRate }}%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {{ $completionRate }}%"></div>
-                                </div>
-                                <div class="progress-label">
-                                    <span>Complete</span>
-                                    <span>{{ $completedTasks }}/{{ $totalTasks }} Tasks</span>
-                                </div>
-                            </div>
-                        </div>
+                        @include('layouts.partials.progress-card')
 
                         <!-- Leaderboard Card -->
                         <div class="card leaderboard-card">
