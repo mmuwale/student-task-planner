@@ -16,7 +16,7 @@
              font-size: 1rem; font-weight: 600; text-decoration: none;">
         + Add New Course
     </a>
-    
+    @endif
   @endauth
   </div>
 
