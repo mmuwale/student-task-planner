@@ -36,42 +36,105 @@ A Laravel-based task management system for students to track assignments, deadli
     CREATE DATABASE student_planner;
     ```
   - Update your `.env` file with your database credentials:
-  ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=student_planner
-   DB_USERNAME=root
-   DB_PASSWORD=(your mysql password)
-  ```
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=student_planner
+    DB_USERNAME=root
+    DB_PASSWORD=(your mysql password)
+    ```
 5. **Run migrations**  
-  `php artisan migrate`  
+    `php artisan migrate`  
 6. **Start development server**  
-  ```bash
-   php artisan serve
-  ``` 
-  Visit: `http://localhost:8000`
+    ```bash
+    php artisan serve
+    ``` 
+    Visit: `http://localhost:8000`
+
+## Branch Information
+  - Default Branch: `frontend/UX`
+  - The default branch was changed from main because of merge conflicts.
 
 # 🎯 Prototype Features
 
 ## Student Features
-- **✅ User Authentication** – Register, login, profile management  
-- **✅ Course Management** – Add, edit, view courses with color coding  
-- **✅ Task & Assignment Tracking** – Create tasks with deadlines, priorities, and status  
-- **✅ Study Groups** – Create and join collaborative study groups  
-- **✅ Reminder System** – Smart deadline reminders  
-- **✅ Dashboard** – Weekly view, progress tracking, upcoming tasks  
+
+- ✅ **User Authentication** – Register, login, profile management, password reset
+- ✅ **Course Enrollment** – Browse and select from available courses
+- ✅ **Task & Assignment Tracking** – Create tasks with deadlines, priorities, and status based on enrolled courses
+- ✅ **Progress Dashboard** – Overview of upcoming tasks, completion percentages, and weekly summaries
+- ✅ **Course Resources** – Access course materials, files, and resources
+- ✅ **Calendar Integration** – View and manage tasks in calendar format
+- ✅ **Study Groups** – Join and participate in collaborative study sessions
+- ✅ **Reminder System** – Smart deadline reminders and notifications
+- ✅ **Search & Filter** – Find courses and tasks quickly with real-time search
 
 ## Admin Features
-- **👑 Course Management** – Add, edit, delete system-wide courses  
-- **👑 User Management** – Manage student accounts and roles  
-- **👑 Group Oversight** – Monitor study groups and members  
-- **👑 Task Analytics** – View completion rates and student progress  
-- **👑 Automated Reminders** – System-generated email notifications for:  
-  - New task assignments  
-  - Group membership updates  
-  - Approaching deadlines  
 
+- 👑 **Full Course Management** – Exclusive rights to add, edit, and delete system-wide courses
+- 👑 **User Management** – Manage student accounts, roles, and permissions
+- 👑 **Course Content Control** – Create and organize course resources and materials
+- 👑 **Task Analytics** – Monitor completion rates and student progress across all courses
+- 👑 **System Configuration** – Manage application settings and defaults
+
+## Core Functionalities
+
+- 📚 **Course-Based Task Organization** – Users create tasks linked to specific enrolled courses
+- 🎯 **Role-Based Access Control** – Admin-only course modification privileges
+- 📊 **Visual Progress Tracking** – Completion percentages and progress indicators
+- 🔔 **Smart Notifications** – Email reminders for deadlines and updates
+- 📱 **Responsive Design** – Mobile-friendly interface for on-the-go access
+- 🔍 **Real-Time Search** – Instant filtering of courses and tasks with debounced search
+- 🎨 **Color-Coded System** – Visual organization with course-specific color schemes
+
+# Gmail App Password Setup for Laravel
+
+To configure Gmail SMTP in your Laravel application, you’ll need a Gmail App Password — your normal Gmail password won’t work for SMTP.
+
+## 1. Enable 2-Step Verification
+
+- Go to your Google Account
+- Navigate to the Security section
+- Under Signing in to Google, find 2-Step Verification
+- Click Get started and follow the setup steps
+
+## 2. Generate an App Password
+
+Go back to the Security section
+Scroll to App passwords under Signing in to Google
+If you don’t see it, 2FA isn’t fully enabled yet
+Click App passwords
+Choose:
+  - App: Mail
+  - Device: Other → name it “Laravel” (or your project name)
+Click Generate
+
+## 3. Copy the App Password
+
+Google will show a 16-character password (no spaces).
+
+## 4. Configure Your Laravel .env File
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your.email@gmail.com
+MAIL_PASSWORD=your_16_character_app_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your.email@gmail.com
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+## 5. Clear Laravel Config & Cache
+
+```
+php artisan config:clear
+php artisan cache:clear
+```
+
+---
 
 # Database Schema
 
