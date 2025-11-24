@@ -721,6 +721,19 @@
 </head>
 <body>
     <div class="container" style="min-height: 100vh; display: flex; flex-direction: column;">
+        @auth
+            <div style="position: fixed; top: 24px; right: 24px; z-index: 2000; min-width: 320px; max-width: 400px;">
+                @foreach (auth()->user()->unreadNotifications as $notification)
+                    <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 12px; background: #e8f0f2; color: #210706; border-left: 5px solid #891d1a; box-shadow: 0 2px 8px rgba(137,29,26,0.08);">
+                        {{ $notification->data['message'] ?? 'You have a new notification.' }}
+                        <form method="POST" action="{{ route('notifications.read', $notification->id) }}" style="display:inline; float:right;">
+                            @csrf
+                            <button type="submit" class="btn-close" aria-label="Close" style="float:right;"></button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        @endauth
         <!-- Sidebar Toggle Button (mobile/desktop) -->
         <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open sidebar">☰</button>
         <!-- Sidebar -->
