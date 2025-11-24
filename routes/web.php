@@ -8,14 +8,16 @@ use App\Http\Controllers\CourseResourceController;
 use App\Http\Controllers\ProfileController;
 
 // Existing routes
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
@@ -25,32 +27,31 @@ require __DIR__.'/auth.php';
 // dashboard
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('dashboard/summary', [DashboardController::class, 'summary']);
-
-Route::get('profile', function () {
-    return view('profile.index');
-})->name('profile');
-
+// Public dashboard route
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 require __DIR__.'/tasks.php';
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('projects', function () {
     return view('projects.index');
 })->name('projects');
 
 Route::get('projects/create', function () {
-    return view('projects.create');
-})->name('projects.create');
-
-Route::get('study-group', function () {
-    return view('study-group.index');
-})->name('study-group');
-
-Route::get('study-group/create', function () {
-    return view('study-group.create');
-})->name('study-group.create');
-
-require __DIR__.'/calendar.php';
-
-Route::get('calendar/create', function () {
+    // Auth protected routes
+    Route::get('dashboard/summary', [DashboardController::class, 'summary']);
+    Route::get('courses', [CourseController::class, 'index'])->name('courses');
+    require __DIR__.'/tasks.php';
+    Route::get('projects', function () { return view('projects.index'); })->name('projects');
+    Route::get('projects/create', function () { return view('projects.create'); })->name('projects.create');
+    Route::get('study-group', function () { return view('study-group.index'); })->name('study-group');
+    Route::get('study-group/create', function () { return view('study-group.create'); })->name('study-group.create');
+    require __DIR__.'/calendar.php';
+    Route::get('calendar/create', function () { return view('calendar.create'); })->name('calendar.create');
+    require __DIR__.'/reminders.php';
+    Route::get('reminders/create', function () { return view('reminders.create'); })->name('reminders.create');
+    Route::get('my-projects', function () { return view('projects.index'); })->name('my-projects');
+    Route::get('my-projects/create', function () { return view('projects.create'); })->name('my-projects.create');
+    Route::get('settings', function () { return view('settings.index'); })->name('settings');
     return view('calendar.create');
 })->name('calendar.create');
 

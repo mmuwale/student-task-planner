@@ -8,11 +8,18 @@
 <body class="min-h-screen flex items-center justify-center bg-slate-100">
 <div class="w-full max-w-md bg-[#f7ecf0] border border-[#e0c1cd] rounded-xl shadow-sm p-8">
     <div class="mb-6 text-center">
-        <div class="text-sm font-semibold tracking-wide text-[#800020] mb-1">LOGO</div>
+        <img src="{{ asset('logo_transparent.png') }}" alt="Logo" class="h-10 mx-auto mb-1" />
         <h1 class="text-xl font-semibold text-slate-800">Create Account</h1>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                @if ($errors->any())
+                    <div class="mb-3 text-xs text-red-600 text-center">
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
         @csrf
         <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
