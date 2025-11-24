@@ -32,6 +32,7 @@ class CourseController extends Controller
         'description'  => $data['description'] ?? null,
         'color'        => $data['color'] ?? null,
         'instructor_id'=> auth()->id(),// since admin = instructor
+        'user_id'      => auth()->id(), // assuming the user creating the course is the owner
     ]);
 
     return redirect()

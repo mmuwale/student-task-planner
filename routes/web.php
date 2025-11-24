@@ -72,19 +72,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | Courses (optional – if you're using them)
     |----------------------------------------------------------------------
     */
-    Route::get('/courses', [CourseController::class, 'index'])
-        ->name('courses.index');
-
-    Route::get('/courses/{course}', [CourseController::class, 'show'])
-        ->name('courses.show');
-
-    Route::get('/courses/create', [CourseController::class, 'create'])
-        ->name('courses.create');   
 
     Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
     ->name('courses.resources.store');
 
-    Route::resource('courses', CourseController::class)->except(['index', 'show', 'create']);
+    Route::resource('courses', CourseController::class);
 
     // Add join/members/etc here later as needed
 
