@@ -24,17 +24,20 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user = $request->user();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+        ]);
+        $user->name = $request->input('name');
+        if ($user->email !== $request->input('email')) {
+            $user->email = $request->input('email');
+            $user->email_verified_at = null;
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->save();
+        return Redirect::route('profile')->with('status', 'Profile updated successfully!');
     }
 
     /**
@@ -42,19 +45,11 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
-
         Auth::logout();
-
         $user->delete();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+    return Redirect::to('/register')->with('status', 'Profile deleted successfully!');
     }
 }
