@@ -18,13 +18,11 @@
         {{-- Top / toggle --}}
         <div class="flex items-center justify-between px-3 py-4 border-b border-[#72213c]">
             <div class="flex items-center gap-2">
-                <div
-                    class="h-8 w-8 rounded-full bg-[#800020] flex items-center justify-center text-xs font-bold">
-                    SP
+                <div class="h-12 w-12 rounded-full bg-[#800020] flex items-center justify-center text-xs font-bold overflow-hidden">
+                    <img src="{{ asset('logo.png') }}" alt="Logo" class="h-12 w-12 object-cover" />
                 </div>
                 <div x-show="sidebarOpen" class="text-xs leading-tight">
-                    <div class="font-semibold tracking-wide">Student Planner</div>
-                    <div class="text-[10px] text-[#f2d9e0]">www.student-planner.com</div>
+                    <div class="font-semibold tracking-wide">Student Task Planner</div>
                 </div>
             </div>
 
@@ -102,9 +100,19 @@
                 </a>
 
                 <span>{{ auth()->user()->name ?? 'Student' }}</span>
-                <button class="px-3 py-1.5 rounded-full border border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white text-[11px]">
-                    Profile
-                </button>
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="px-3 py-1.5 rounded-full border border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white text-[11px] flex items-center gap-1">
+                        Profile
+                        <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-36 bg-white rounded-md shadow-lg z-50 border border-slate-200">
+                        <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100">Profile</a>
+                        <form method="POST" action="{{ route('logout') }}" class="block">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-xs text-[#800020] hover:bg-slate-100">Logout</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </header>
 
