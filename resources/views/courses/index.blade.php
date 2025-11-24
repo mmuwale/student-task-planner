@@ -8,13 +8,16 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
     <h2 style="color: #3d1f2e; margin: 0; font-size: 2rem;">My Courses</h2>
-
+  @auth
+    @if(auth()->user()->isAdmin())
     <a href="{{ route('courses.create') }}" 
       style="background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%);
              color: #fff; border: none; border-radius: 9px; padding: 12px 22px;
              font-size: 1rem; font-weight: 600; text-decoration: none;">
         + Add New Course
     </a>
+    
+  @endauth
   </div>
 
   @php

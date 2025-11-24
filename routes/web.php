@@ -55,53 +55,32 @@ Route::get('projects/create', function () {
     return view('calendar.create');
 })->name('calendar.create');
 
-require __DIR__.'/reminders.php';
+    Route::get('/reminders/create', function () {
+        return view('reminders.create');
+    })->name('reminders.create');
 
-Route::get('reminders/create', function () {
-    return view('reminders.create');
-})->name('reminders.create');
-require __DIR__.'/reminders.php';
+    Route::get('/my-projects', function () {
+        return view('projects.index');
+    })->name('my-projects');
 
-Route::get('reminders/create', function () {
-    return view('reminders.create');
-})->name('reminders.create');
+    Route::get('/my-projects/create', function () {
+        return view('projects.create');
+    })->name('my-projects.create');
 
-Route::get('my-projects', function () {
-    return view('projects.index');
-})->name('my-projects');
+    Route::get('/settings', function () {
+        return view('settings.index');
+    })->name('settings');
 
-Route::get('my-projects/create', function () {
-    return view('projects.create');
-})->name('my-projects.create');
+    Route::get('/settings/create', function () {
+        return view('settings.create');
+    })->name('settings.create');
 
-Route::get('settings', function () {
-    return view('settings.index');
-})->name('settings');
+    /*
+    |----------------------------------------------------------------------
+    | Extra route files (calendar, reminders)
+    |----------------------------------------------------------------------
+    */
 
-Route::get('settings/create', function () {
-    return view('settings.create');
-})->name('settings.create');
-
-
-// better routes
-Route::resource('courses', CourseController::class);
-
-
-Route::get('/courses/{course}', [CourseController::class, 'show'])
-     ->name('courses.show');
-
-
-Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
-    ->name('courses.resources.store');
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-
-Route::get('/tasks/completed', [TaskController::class, 'completed'])
-    ->name('tasks.completed');
-
-
-Route::resource('tasks', TaskController::class);
-
-
-Route::post('/tasks/{task}/undo-complete', [TaskController::class, 'undoComplete'])
-    ->name('tasks.undoComplete');
+    require __DIR__.'/calendar.php';
+    require __DIR__.'/reminders.php';
+});
