@@ -18,9 +18,17 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+
 // Breeze / auth routes (login, register, etc.)
 require __DIR__.'/auth.php';
 
+// Password verification token routes (grouped with auth)
+Route::get('/verify-password', function () {
+    return view('auth.verify-password');
+})->name('verify-password');
+Route::post('/verify-password', [App\Http\Controllers\Auth\VerifyPasswordController::class, 'submit'])->name('verify-password.submit');
+
+// All app routes require auth
 // All app routes require auth
 Route::middleware(['auth', 'verified'])->group(function () {
 
