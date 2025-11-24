@@ -27,12 +27,9 @@ class Courses extends Component
             $query->where('name', 'like', '%' . $this->search . '%');
         }
 
-        
-        $courses = $query->paginate(env('PAGINATION_COUNT', 10));
+        $courses = $query->paginate(env('PAGINATION_SIZE', 10));
 
-        return view('livewire.courses', compact('courses'))
-            ->extends('layouts.app')
-            ->section('content');
+        return view('livewire.courses', compact('courses'));
     }
 
     public function rules()

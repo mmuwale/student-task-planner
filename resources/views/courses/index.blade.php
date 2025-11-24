@@ -5,7 +5,7 @@
 <div style="margin: 48px auto; max-width: 950px; padding: 0 20px;">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
     <h2 style="color: #3d1f2e; margin: 0; font-size: 2rem;">My Courses</h2>
-    <a href="{{ route('courses.create') }}" style="background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%); color: #fff; border: none; border-radius: 9px; padding: 12px 22px; font-size: 1rem; font-weight: 600; text-decoration: none; transition: background 0.2s;">+ Add New Course</a>
+  <button type="button" style="background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%); color: #fff; border: none; border-radius: 9px; padding: 12px 22px; font-size: 1rem; font-weight: 600; text-decoration: none; transition: background 0.2s; cursor:pointer;">+ Add New Course</button>
   </div>
 
   @php
