@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -64,39 +65,32 @@ class TaskController extends Controller
             'course_id' => 'required|integer', 
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'due_date' => 'required|date',
+            'due_date' => 'nullable|date',
             'status' => 'nullable|in:pending,completed',
             'reminder_at' => 'nullable|date',
         ]);
-        
+
+        // If due_date is not provided, set it to now
+        if (empty($data['due_date'])) {
+            $data['due_date'] = now();
+        }
+
         // Ensure status defaults to 'pending' if not explicitly set
         if (!isset($data['status'])) {
             $data['status'] = 'pending';
         }
 
-        $task = Task::create($data);
+    $data['user_id'] = Auth::id() ?? 1;
+    $task = Task::create($data);
         
         // Check if the request is an AJAX request (for dynamic calendar update)
         if ($request->ajax() || $request->wantsJson()) {
             
-            // Generate the time display for the task list item
-            // Check if the due_date contains a time component
-            $parsedDate = Carbon::parse($task->due_date);
-            $timeFormat = ($task->due_date && $parsedDate->format('H:i:s') !== '00:00:00') 
-                ? $parsedDate->format('g:i A') 
-                : null;
 
-            // Construct the HTML snippet, matching the style in the calendar view
+            // Construct the HTML snippet without the time part
             // Using e() for escaping the title to prevent XSS
             $taskHtml = '<li style="background: #fff; border-radius: 6px; margin-bottom: 4px; padding: 4px 6px; color: #3d1f2e; font-size: 14px; border: 1px solid #e0c3c3;">'
-                        . e($task->title); 
-
-            if ($timeFormat) {
-                // Time span style
-                $taskHtml .= '<span style="color: #683844; font-size: 12px;">(' . $timeFormat . ')</span>';
-            }
-            
-            $taskHtml .= '</li>';
+                        . e($task->title) . '</li>';
 
             // Return the JSON response for dynamic calendar update
             return response()->json([

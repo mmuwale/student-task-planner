@@ -32,6 +32,7 @@ require __DIR__.'/auth.php';
 
 
 Route::apiResource('tasks', TaskController::class);
+Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
 Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
 
 // dashboard

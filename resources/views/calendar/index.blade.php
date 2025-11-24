@@ -70,9 +70,6 @@ $isToday = $date == $today;
 @foreach($tasksByDate[$date] as $task)
 <li style="background: #fff; border-radius: 6px; margin-bottom: 4px; padding: 4px 6px; color: #3d1f2e; font-size: 14px; border: 1px solid #e0c3c3;">
 {{ $task->title }}
-@if($task->due_date)
-<span style="color: #683844; font-size: 12px;">({{ \Carbon\Carbon::parse($task->due_date)->format('g:i A') }})</span>
-@endif
 </li>
 @endforeach
 @endif
@@ -107,9 +104,7 @@ $isToday = $date == $today;
     <label>Description:
         <textarea name="description" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ceb2bd;"></textarea>
     </label>
-    <label>Time (Optional):
-        <input type="time" name="time" id="taskTimeInput" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ceb2bd;">
-    </label>
+    <!-- Time input removed -->
     <button type="submit" style="background: linear-gradient(90deg, #cc4c46ff 0%, #891d1a 100%); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 15px; font-weight: 600; cursor: pointer;">Save Task</button>
     <button type="button" onclick="hideAddTaskForm()" style="background: #e0c3c3; color: #683844; border: none; border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: 600; cursor: pointer; position:absolute; top:12px; right:12px;">&times;</button>
 </form>
@@ -145,7 +140,7 @@ e.preventDefault(); // Prevent the default form submission
 const form = e.target;
 const formData = new FormData(form);
 const taskDate = formData.get('date');
-const taskTime = formData.get('time');
+
 const csrfToken = formData.get('_token');
 
 // Clear any previous error messages before submission
@@ -153,27 +148,17 @@ const errorDiv = document.getElementById('errorMessage');
 errorDiv.style.display = 'none';
 errorDiv.innerHTML = '';
 
-// Construct the combined due_date string (YYYY-MM-DD HH:MM:SS)
-// If time is present, send the full datetime string for validation
-const combinedDueDate = taskTime ? `${taskDate} ${taskTime}:00` : taskDate;
-
-const data = {
-    _token: csrfToken,
-    course_id: formData.get('course_id'),
-    title: formData.get('title'),
-    description: formData.get('description'),
-    // Send the combined date for controller validation
-    due_date: combinedDueDate, 
-};
+// Only send the date (no time)
+formData.set('due_date', taskDate);
 
 // Send the AJAX request using fetch
 fetch('{{ route('tasks.store') }}', {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-TOKEN': csrfToken
     },
-    body: JSON.stringify(data)
+    body: formData
 })
 .then(response => {
     if (!response.ok) {
