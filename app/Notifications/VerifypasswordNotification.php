@@ -28,7 +28,7 @@ class VerifypasswordNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -56,6 +56,7 @@ class VerifypasswordNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'message' => 'Please verify your email address.',
             'verify_url' => url('/verify-email?token=' . $this->token . '&email=' . urlencode($notifiable->email)),
             'token' => $this->token,
         ];

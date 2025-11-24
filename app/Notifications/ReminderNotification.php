@@ -30,7 +30,7 @@ class ReminderNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -60,6 +60,7 @@ class ReminderNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'message' => 'Reminder: Task "' . ($this->task->title ?? '') . '" is due soon.',
             'task_id' => $this->task->id ?? null,
             'title' => $this->task->title ?? '',
             'description' => $this->task->description ?? '',

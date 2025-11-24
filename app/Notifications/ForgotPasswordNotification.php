@@ -28,7 +28,7 @@ class ForgotPasswordNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -55,6 +55,7 @@ class ForgotPasswordNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'message' => 'Password reset requested for your account.',
             'reset_url' => url('/password/reset/' . $this->token . '?email=' . urlencode($notifiable->email)),
         ];
     }
