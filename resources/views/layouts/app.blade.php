@@ -628,7 +628,7 @@
             <div style="display: flex; justify-content: center; align-items: center; height: 18%; min-height: 100px; background: none;">
                 <img src="{{ asset('logo_2.png') }}" alt="Logo" style="max-height: 80%; max-width: 60%; object-fit: contain; display: block;">
             </div>
-            @include('layouts.partials.navigation')
+            @include('partials.navigation')
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Main Content -->
