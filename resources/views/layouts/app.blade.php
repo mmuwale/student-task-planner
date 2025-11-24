@@ -148,9 +148,6 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
         /* Header */
@@ -659,11 +656,6 @@
         .task-dot.blue { background: #5b8fa3; }
         .task-dot.purple { background: #8b6fa3; }
 
-        /* Content shifting for mobile sidebar - APPLIES TO ALL PAGES */
-        .main-content-container {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         /* Responsive */
         @media (max-width: 1024px) {
             .main-grid {
@@ -728,7 +720,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="min-height: 100vh; display: flex; flex-direction: column;">
         <!-- Sidebar Toggle Button (mobile/desktop) -->
         <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open sidebar">☰</button>
         <!-- Sidebar -->
@@ -741,11 +733,7 @@
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Main Content -->
-<<<<<<< HEAD
-        <div class="main-content-container" id="mainContent" style="flex:1; display: flex; flex-direction: column;">
-=======
         <div style="flex:1; display: flex; flex-direction: column;">
->>>>>>> a91e85c4e8e37c900f268f52484994666daba94c
             <!-- Enhanced Header -->
             <div class="header" id="mainHeader">
                 <div class="logo" id="headerLogo">
@@ -758,7 +746,7 @@
                         <div class="user-avatar" id="userAvatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
                         <span>Welcome, {{ Auth::user()->name }}!</span>
                         <div id="avatarDropdown" class="avatar-dropdown">
-                            <a href="{{ route('profile') }}">Profile</a>
+                            <a href="{{ route('profile.edit') }}">Profile</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit">Logout</button>
@@ -863,18 +851,9 @@
                     </div>
                 </div>
             @else
-                <!-- This applies to ALL other pages (Study Group, Calendar, Reminders, etc.) -->
-                <div class="page-content">
-                    @yield('content')
-                </div>
+                @yield('content')
             @endif
         </div>
-
-        <footer class="footer" style="margin-top: auto;">
-            <a href="#" style="color: #f0f6f7; text-decoration: none; font-weight: 600;">
-                &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
-            </a>
-        </footer>
     </div>
 
     <script>
@@ -885,65 +864,13 @@
             const mainGrid = document.getElementById('mainGrid');
             const sidebarToggle = document.getElementById('sidebarToggle');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-<<<<<<< HEAD
-            const mainContent = document.getElementById('mainContent');
-=======
             const userAvatar = document.getElementById('userAvatar');
             const avatarDropdown = document.getElementById('avatarDropdown');
             const userMenu = document.getElementById('userMenu');
->>>>>>> a91e85c4e8e37c900f268f52484994666daba94c
             
             let isSidebarHidden = false;
 
-            // Function to shift content when sidebar is open - WORKS FOR ALL PAGES
-            function shiftContent(shouldShift) {
-                if (window.innerWidth < 1025 && mainContent) {
-                    if (shouldShift) {
-                        mainContent.style.transform = 'translateX(260px)';
-                        mainContent.style.marginRight = '-260px';
-                    } else {
-                        mainContent.style.transform = 'translateX(0)';
-                        mainContent.style.marginRight = '0';
-                    }
-                }
-            }
-
             // Header logo toggles sidebar and expands header
-<<<<<<< HEAD
-            headerLogo.addEventListener('click', function() {
-                isSidebarHidden = !isSidebarHidden;
-                
-                if (isSidebarHidden) {
-                    // Hide sidebar and expand header
-                    sidebar.classList.add('hide');
-                    header.classList.add('expanded');
-                    if (mainGrid) mainGrid.classList.add('expanded');
-                    shiftContent(false);
-                } else {
-                    // Show sidebar and collapse header
-                    sidebar.classList.remove('hide');
-                    header.classList.remove('expanded');
-                    if (mainGrid) mainGrid.classList.remove('expanded');
-                    if (window.innerWidth < 1025) {
-                        shiftContent(true);
-                    }
-                }
-            });
-
-            // Mobile sidebar toggle - FIXED
-            sidebarToggle.addEventListener('click', function() {
-                const isOpening = !sidebar.classList.contains('open');
-                sidebar.classList.toggle('open');
-                sidebarOverlay.style.display = isOpening ? 'block' : 'none';
-                shiftContent(isOpening);
-            });
-            
-            sidebarOverlay.addEventListener('click', function() {
-                sidebar.classList.remove('open');
-                this.style.display = 'none';
-                shiftContent(false);
-            });
-=======
             if (headerLogo) {
                 headerLogo.addEventListener('click', function() {
                     isSidebarHidden = !isSidebarHidden;
@@ -1000,9 +927,8 @@
                     sidebarOverlay.classList.remove('open');
                 });
             }
->>>>>>> a91e85c4e8e37c900f268f52484994666daba94c
 
-            // Task completion animation (only for home page)
+            // Task completion animation
             document.querySelectorAll('.task-checkbox').forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
                     const taskItem = this.closest('.task-item');
@@ -1016,61 +942,33 @@
                 });
             });
 
-            // Handle responsive behavior - IMPROVED
+            // Handle responsive behavior
             function handleResize() {
                 if (window.innerWidth >= 1025) {
                     // Desktop: ensure proper state
-<<<<<<< HEAD
-                    sidebar.classList.remove('open');
-                    sidebarOverlay.style.display = 'none';
-                    sidebarToggle.style.display = 'none';
-                    shiftContent(false);
-                    
-=======
                     if (sidebar) sidebar.classList.remove('open');
                     if (sidebarOverlay) sidebarOverlay.classList.remove('open');
->>>>>>> a91e85c4e8e37c900f268f52484994666daba94c
                     if (!isSidebarHidden) {
                         if (sidebar) sidebar.classList.remove('hide');
                         if (header) header.classList.remove('expanded');
                         if (mainGrid) mainGrid.classList.remove('expanded');
                     }
                 } else {
-<<<<<<< HEAD
-                    // Mobile: reset expanded state and show toggle button
-                    sidebarToggle.style.display = 'inline-block';
-                    header.classList.remove('expanded');
-=======
                     // Mobile: reset expanded state
                     if (header) header.classList.remove('expanded');
->>>>>>> a91e85c4e8e37c900f268f52484994666daba94c
                     if (mainGrid) mainGrid.classList.remove('expanded');
-                    sidebar.classList.remove('hide');
-                    shiftContent(sidebar.classList.contains('open'));
-                    
-                    // Ensure sidebar starts closed on mobile
-                    if (!sidebar.classList.contains('open')) {
-                        sidebar.classList.remove('open');
-                        sidebarOverlay.style.display = 'none';
-                        shiftContent(false);
-                    }
                 }
             }
 
             window.addEventListener('resize', handleResize);
             handleResize(); // Initial check
-
-            // Close sidebar when clicking on sidebar items on mobile
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    if (window.innerWidth < 1025) {
-                        sidebar.classList.remove('open');
-                        sidebarOverlay.style.display = 'none';
-                        shiftContent(false);
-                    }
-                });
-            });
         });
     </script>
+
+    <footer class="footer">
+        <a href="#" style="color: #f0f6f7; text-decoration: none; font-weight: 600;">
+            &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
+        </a>
+    </footer>
 </body>
 </html>
