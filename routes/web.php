@@ -7,53 +7,107 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseResourceController;
 use App\Http\Controllers\ProfileController;
 
-// Existing routes
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Redirect root to dashboard/login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
+// Breeze / auth routes (login, register, etc.)
 require __DIR__.'/auth.php';
 
-// dashboard
-Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('dashboard/summary', [DashboardController::class, 'summary']);
-// Public dashboard route
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-require __DIR__.'/tasks.php';
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// All app routes require auth
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::get('projects', function () {
-    return view('projects.index');
-})->name('projects');
+    /*
+    |----------------------------------------------------------------------
+    | Dashboard
+    |----------------------------------------------------------------------
+    */
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-Route::get('projects/create', function () {
-    // Auth protected routes
-    Route::get('dashboard/summary', [DashboardController::class, 'summary']);
-    Route::get('courses', [CourseController::class, 'index'])->name('courses');
-    require __DIR__.'/tasks.php';
-    Route::get('projects', function () { return view('projects.index'); })->name('projects');
-    Route::get('projects/create', function () { return view('projects.create'); })->name('projects.create');
-    Route::get('study-group', function () { return view('study-group.index'); })->name('study-group');
-    Route::get('study-group/create', function () { return view('study-group.create'); })->name('study-group.create');
-    require __DIR__.'/calendar.php';
-    Route::get('calendar/create', function () { return view('calendar.create'); })->name('calendar.create');
-    require __DIR__.'/reminders.php';
-    Route::get('reminders/create', function () { return view('reminders.create'); })->name('reminders.create');
-    Route::get('my-projects', function () { return view('projects.index'); })->name('my-projects');
-    Route::get('my-projects/create', function () { return view('projects.create'); })->name('my-projects.create');
-    Route::get('settings', function () { return view('settings.index'); })->name('settings');
-    return view('calendar.create');
-})->name('calendar.create');
+    Route::get('/dashboard/summary', [DashboardController::class, 'summary'])
+        ->name('dashboard.summary');
+
+    /*
+    |----------------------------------------------------------------------
+    | Profile
+    |----------------------------------------------------------------------
+    */
+    Route::get('/profile', [ProfileController::class, 'show'])
+        ->name('profile.show');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+
+    /*
+    |----------------------------------------------------------------------
+    | Tasks (this gives you tasks.create, tasks.index, etc.)
+    |----------------------------------------------------------------------
+    */
+
+    // Extra task routes
+    Route::get('/tasks/completed', [TaskController::class, 'completed'])
+        ->name('tasks.completed');
+
+    Route::post('/tasks/{task}/undo-complete', [TaskController::class, 'undoComplete'])
+        ->name('tasks.undoComplete');
+
+    // RESTful resource: index, create, store, show, edit, update, destroy
+    Route::resource('tasks', TaskController::class);
+    // => tasks.create  -> GET /tasks/create
+    // => tasks.store   -> POST /tasks
+    // => tasks.edit    -> GET /tasks/{task}/edit
+    // etc.
+
+    /*
+    |----------------------------------------------------------------------
+    | Courses (optional – if you're using them)
+    |----------------------------------------------------------------------
+    */
+    Route::get('/courses', [CourseController::class, 'index'])
+        ->name('courses.index');
+
+    Route::get('/courses/{course}', [CourseController::class, 'show'])
+        ->name('courses.show');
+
+    Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
+    ->name('courses.resources.store');
+
+    // Add join/members/etc here later as needed
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Other simple pages
+    |----------------------------------------------------------------------
+    */
+    Route::get('/projects', function () {
+        return view('projects.index');
+    })->name('projects');
+
+    Route::get('/projects/create', function () {
+        return view('projects.create');
+    })->name('projects.create');
+
+    Route::get('/study-group', function () {
+        return view('study-group.index');
+    })->name('study-group');
+
+    Route::get('/study-group/create', function () {
+        return view('study-group.create');
+    })->name('study-group.create');
+
+    Route::get('/calendar/create', function () {
+        return view('calendar.create');
+    })->name('calendar.create');
 
     Route::get('/reminders/create', function () {
         return view('reminders.create');
@@ -77,10 +131,9 @@ Route::get('projects/create', function () {
 
     /*
     |----------------------------------------------------------------------
-    | Extra route files (calendar, reminders)
+    | Extra route files
     |----------------------------------------------------------------------
     */
-
     require __DIR__.'/calendar.php';
     require __DIR__.'/reminders.php';
 });
