@@ -23,7 +23,7 @@ class TaskSeeder extends Seeder
                 'due_date' => now()->addDays(7),
                 'due_time' => '23:59:00',
                 'priority' => 'high',
-                'status' => 'not_started',
+                'status' => 'todo',
                 'estimated_duration' => 120, // minutes
                 'type' => 'assignment',
                 'created_at' => now(),
@@ -37,7 +37,7 @@ class TaskSeeder extends Seeder
                 'due_date' => now()->addDays(14),
                 'due_time' => '09:00:00',
                 'priority' => 'urgent',
-                'status' => 'in_progress',
+                'status' => 'todo',
                 'estimated_duration' => 300, // minutes
                 'type' => 'study',
                 'created_at' => now(),
@@ -51,7 +51,7 @@ class TaskSeeder extends Seeder
                 'due_date' => now()->addDays(10),
                 'due_time' => '17:00:00',
                 'priority' => 'high',
-                'status' => 'not_started',
+                'status' => 'todo',
                 'estimated_duration' => 180, // minutes
                 'type' => 'project',
                 'created_at' => now(),
@@ -65,7 +65,7 @@ class TaskSeeder extends Seeder
                 'due_date' => now()->addDays(3),
                 'due_time' => '14:30:00',
                 'priority' => 'medium',
-                'status' => 'completed',
+                'status' => 'todo',
                 'estimated_duration' => 90, // minutes
                 'type' => 'assignment',
                 'created_at' => now(),

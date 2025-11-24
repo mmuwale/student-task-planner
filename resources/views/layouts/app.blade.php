@@ -8,7 +8,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-slate-100 text-slate-900">
-<div x-data="{ sidebarOpen: true, showTaskModal: false }" class="min-h-screen flex">
+<div x-data="{ sidebarOpen: true }" class="min-h-screen flex">
 
     {{-- Sidebar --}}
     <aside
@@ -91,16 +91,15 @@
                 @hasSection('page_subtitle')
                     <p class="text-xs text-slate-500">@yield('page_subtitle')</p>
                 @endif
->>>>>>> 1b898f6 (fixed the login and registration pages, and started authentication)
             </div>
             <div class="flex items-center gap-3 text-xs text-slate-500">
-                {{-- Always-visible Add Task button --}}
-                <button
-                    @click="showTaskModal = true"
+                {{-- Add Task now goes to full create view --}}
+                <a
+                    href="{{ route('tasks.create') }}"
                     class="px-3 py-1.5 rounded-full bg-[#800020] text-white text-[11px] hover:bg-[#a21c3b]"
                 >
                     + Add Task
-                </button>
+                </a>
 
                 <span>{{ auth()->user()->name ?? 'Student' }}</span>
                 <button class="px-3 py-1.5 rounded-full border border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white text-[11px]">
@@ -114,12 +113,8 @@
         </section>
     </main>
 
-    {{-- Put the modal INSIDE the x-data scope so showTaskModal works --}}
-    @include('partials.add-task-modal', ['modalVar' => 'showTaskModal'])
-
 </div>
 
 @yield('modals')
 </body>
 </html>
-

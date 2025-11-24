@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('course_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['not_started', 'in_progress', 'completed', 'on_hold'])->default('not_started');
+            $table->enum('status', ['todo', 'in_progress', 'completed'])->default('todo');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');
             $table->date('due_date'); // Change from nullable to required
             $table->time('due_time')->nullable(); // Add this for time-specific deadlines

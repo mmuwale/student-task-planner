@@ -55,15 +55,18 @@ class DashboardController extends Controller
                     ];
                 });
 
-            $courses = Course::whereHas('tasks', function ($q) use ($date) {
-                $q->whereDate('due_date', $date->toDateString());
-            })->pluck('name')->toArray();
+            // 🟢 rename this so it doesn't conflict with global $courses
+            $dayCourses = Course::whereHas('tasks', function ($q) use ($date) {
+                    $q->whereDate('due_date', $date->toDateString());
+                })
+                ->pluck('name')
+                ->toArray();
 
             $weekDays[] = [
                 'name'    => $date->format('l'),
                 'date'    => $date->format('M j'),
                 'tasks'   => $tasks,
-                'courses' => $courses,
+                'courses' => $dayCourses,
             ];
         }
 
@@ -92,6 +95,9 @@ class DashboardController extends Controller
             ->sortByDesc('completion_rate')
             ->values();
 
+        // 🔹 If your views still expect $courses (e.g. old modal/sidebar), define it here:
+        $courses = Course::orderBy('name')->get();
+
         // Pass all variables to the dashboard view
         return view('dashboard', compact(
             'upcomingTasks',
@@ -102,7 +108,8 @@ class DashboardController extends Controller
             'leaderboard',
             'todayCount',
             'weekCount',
-            'progressPercent'
+            'progressPercent',
+            'courses',
         ));
     }
 
@@ -133,13 +140,13 @@ class DashboardController extends Controller
         $todayTasks = Task::whereDate('due_date', $now->toDateString())->count();
 
         return response()->json([
-            'total_tasks'             => $totalTasks,
-            'upcoming_tasks_next_days'=> $upcomingTasks,
-            'overdue_tasks'           => $overdueTasks,
-            'tasks_due_today'         => $todayTasks,
-            'tasks_by_course'         => $tasksByCourse,
-            'study_groups_count'      => $studyGroupsCount,
-            'group_members_count'     => $groupMembersCount,
+            'total_tasks'              => $totalTasks,
+            'upcoming_tasks_next_days' => $upcomingTasks,
+            'overdue_tasks'            => $overdueTasks,
+            'tasks_due_today'          => $todayTasks,
+            'tasks_by_course'          => $tasksByCourse,
+            'study_groups_count'       => $studyGroupsCount,
+            'group_members_count'      => $groupMembersCount,
         ]);
     }
 }

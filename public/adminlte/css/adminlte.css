@@ -194,6 +194,10 @@
   }
 }
 
+.course-card:hover {
+  transform: scale(1.03);
+}
+
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
@@ -15460,6 +15464,10 @@ html.maximized-card {
   width: auto;
   height: auto;
   overflow: visible;
+}
+
+.course-card:hover {
+  transform: scale(1.03);
 }
 
 .sidebar-menu .active > a {

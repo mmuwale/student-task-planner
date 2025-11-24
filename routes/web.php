@@ -5,9 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseResourceController;
-use App\Http\Controllers\CourseResourceController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Mail;
 
 // Existing routes
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -29,22 +27,11 @@ Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard'
 Route::get('dashboard/summary', [DashboardController::class, 'summary']);
 Route::get('courses', [CourseController::class, 'index'])->name('courses');
 
-Route::get('courses', function () {
-    return view('courses.index');
-})->name('courses');
-Route::get('courses/create', function () {
-    return view('courses.create');
-})->name('courses.create');
-
 Route::get('profile', function () {
     return view('profile.index');
 })->name('profile');
 
 require __DIR__.'/tasks.php';
-
-Route::get('tasks/create', function () {
-    return view('tasks.create');
-})->name('tasks.create');
 
 Route::get('projects', function () {
     return view('projects.index');
@@ -100,7 +87,7 @@ Route::get('settings/create', function () {
 Route::get('/courses/{course}', [CourseController::class, 'show'])
      ->name('courses.show');
 
-Route::resource('courses', CourseController::class)->only(['index','show']);
+Route::resource('courses', CourseController::class);
 
 Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
     ->name('courses.resources.store');
@@ -111,7 +98,8 @@ Route::get('/tasks/completed', [TaskController::class, 'completed'])
     ->name('tasks.completed');
 
 
-Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update']);
+Route::resource('tasks', TaskController::class);
 
 
-    
+Route::post('/tasks/{task}/undo-complete', [TaskController::class, 'undoComplete'])
+    ->name('tasks.undoComplete');

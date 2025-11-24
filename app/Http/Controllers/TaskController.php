@@ -71,57 +71,49 @@ class TaskController extends Controller
 
 
     public function store(Request $request)
-    {
-        // Validation updated: Changed 'required|exists:courses,id' to 'required|integer' 
-        // to prevent a 500 error if the courses table is empty or missing ID=1.
-        $data = $request->validate([
-            'course_id' => 'required|integer', 
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'due_date' => 'required|date',
-            'status' => 'nullable|in:pending,completed',
-            'reminder_at' => 'nullable|date',
+{
+    $data = $request->validate([
+        'course_id'       => 'nullable|integer|exists:courses,id',
+        'new_course_name' => 'nullable|string|max:255',
+        'title'           => 'required|string|max:255',
+        'description'     => 'nullable|string',
+        'due_date'        => 'required|date',
+        'status'          => 'nullable|in:todo,in_progress,completed',
+        'reminder_at'     => 'nullable|date',
+        'priority'        => 'nullable|in:low,medium,high',
+    ]);
+
+    // If no existing course selected but user typed a name → create course
+    if (empty($data['course_id']) && !empty($data['new_course_name'])) {
+        $course = Course::create([
+            'name' => $data['new_course_name'],
         ]);
-        
-        // Ensure status defaults to 'pending' if not explicitly set
-        if (!isset($data['status'])) {
-            $data['status'] = 'pending';
-        }
+        $data['course_id'] = $course->id;
+    }
 
-        $task = Task::create($data);
-        
-        // Check if the request is an AJAX request (for dynamic calendar update)
-        if ($request->ajax() || $request->wantsJson()) {
-            
-            // Generate the time display for the task list item
-            // Check if the due_date contains a time component
-            $parsedDate = Carbon::parse($task->due_date);
-            $timeFormat = ($task->due_date && $parsedDate->format('H:i:s') !== '00:00:00') 
-                ? $parsedDate->format('g:i A') 
-                : null;
+    // Still no course? Validation-style error.
+    if (empty($data['course_id'])) {
+        return back()
+            ->withErrors(['course_id' => 'Please select or create a course.'])
+            ->withInput();
+    }
 
-            // Construct the HTML snippet, matching the style in the calendar view
-            // Using e() for escaping the title to prevent XSS
-            $taskHtml = '<li style="background: #fff; border-radius: 6px; margin-bottom: 4px; padding: 4px 6px; color: #3d1f2e; font-size: 14px; border: 1px solid #e0c3c3;">'
-                        . e($task->title); 
+    // Default status if not set
+    if (!isset($data['status'])) {
+        $data['status'] = 'pending';
+    }
 
-            if ($timeFormat) {
-                // Time span style
-                $taskHtml .= '<span style="color: #683844; font-size: 12px;">(' . $timeFormat . ')</span>';
-            }
-            
-            $taskHtml .= '</li>';
+    unset($data['new_course_name']); // not a column on tasks table
 
-            // Return the JSON response for dynamic calendar update
-            return response()->json([
-                'task' => $task,
-                'taskHtml' => $taskHtml, // The HTML snippet to insert in the calendar cell
-            ], 201);
-        }
+    $task = Task::create($data);
 
-        // Default JSON response for non-AJAX API calls
+    // For now just redirect back – you can tweak for AJAX if needed
+    if ($request->ajax() || $request->wantsJson()) {
         return response()->json($task, 201);
     }
+
+    return redirect()->back()->with('status', 'Task created.');
+}
 
     
     public function show(Task $task)
@@ -131,19 +123,58 @@ class TaskController extends Controller
 
    
     public function update(Request $request, Task $task)
-    {
-        $data = $request->validate([
-            'course_id' => 'integer|exists:courses,id',
-            'title' => 'string|max:255',
-            'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
-            'status' => 'nullable|in:pending,completed',
-            'reminder_at' => 'nullable|date',
-        ]);
+{
+    $originalStatus = $task->status;
 
-        $task->update($data);
-        return back()->with('status', 'Task updated.');
+    $data = $request->validate([
+        'course_id'    => 'sometimes|integer|exists:courses,id',
+        'title'        => 'sometimes|string|max:255',
+        'description'  => 'sometimes|nullable|string',
+        'due_date'     => 'sometimes|nullable|date',
+        'status'       => 'sometimes|nullable|in:todo,in_progress,completed',
+        'reminder_at'  => 'sometimes|nullable|date',
+    ]);
+
+    $task->update($data);
+
+    // If this was a normal web request and we just completed the task,
+    // flash undo info to the session so the toast can use it.
+    if (!$request->wantsJson()
+        && $originalStatus !== 'completed'
+        && $task->status === 'completed') {
+
+        return redirect()
+            ->back()
+            ->with('undo_task_id', $task->id)
+            ->with('undo_task_title', $task->title);
     }
+
+    // If it's an API / AJAX request, return JSON instead of redirect
+    if ($request->wantsJson()) {
+        return response()->json([
+            'message' => 'Task updated.',
+            'task' => $task->load('course'),
+        ]);
+    }
+
+    return back()->with('status', 'Task updated.');
+}
+    public function create()
+{
+    // Get courses for the dropdown
+    $courses = Course::orderBy('name')->get();
+
+    return view('tasks.create', compact('courses'));
+}
+
+    public function edit(Task $task)
+    {
+        // Get courses for the dropdown
+        $courses = Course::orderBy('name')->get();
+
+        return view('tasks.edit', compact('task', 'courses'));
+    }
+
 
     public function destroy(Task $task)
     {
@@ -169,5 +200,24 @@ class TaskController extends Controller
 
         return view('tasks.completed', compact('tasks'));
     }
+
+    public function undoComplete(Task $task, Request $request)
+{
+    // You can get fancier and restore a previous status,
+    // but for now we just go back to 'pending'.
+    $task->update(['status' => 'todo']);
+
+    if ($request->wantsJson()) {
+        return response()->json([
+            'message' => 'Task completion undone.',
+            'task' => $task->load('course'),
+        ]);
+    }
+
+    return redirect()
+        ->back()
+        ->with('status', 'Task marked as not started again.');
+}
+
 
 }

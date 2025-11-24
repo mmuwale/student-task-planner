@@ -5,89 +5,80 @@
 @section('page_subtitle', 'Overview of your courses and upcoming tasks')
 
 @section('content')
-<div
-    x-data="{
-        showTaskModal: false,
-        showModal: false,
-        activeTask: null,
-        openTask(task) {
-            this.activeTask = JSON.parse(JSON.stringify(task));
-            this.showModal = true;
-        },
-        closeModal() {
-            this.showModal = false;
-        }
-    }"
-    class="space-y-6"
->
+<div class="space-y-6">
+
     {{-- TOP GRID: UPCOMING TASKS + PROGRESS --}}
     <div class="grid grid-cols-12 gap-6">
         {{-- UPCOMING TASKS (scrollable) --}}
         <div class="col-span-12 lg:col-span-7 bg-white border border-slate-200 rounded-xl shadow-sm">
             <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100">
-                <div class="flex items-center gap-3 text-xs">
-                    <span class="font-semibold text-slate-700">Upcoming Tasks</span>
-                </div>
-                <button
-                    @click="showTaskModal = true"
-                    class="px-3 py-1.5 text-xs rounded-full bg-[#800020] text-white hover:bg-[#a22640]"
-                >
-                    + Add Task
-                </button>
-            </div>
+    <div class="flex items-center gap-3 text-xs">
+        <span class="font-semibold text-slate-700">Upcoming Tasks</span>
+    </div>
+    <a
+        href="{{ route('tasks.create') }}"
+        class="px-3 py-1.5 text-xs rounded-full bg-[#800020] text-white hover:bg-[#a22640]"
+    >
+        + Add Task
+    </a>
+</div>
+
 
             <div class="p-5 text-xs">
                 <div class="max-h-72 overflow-y-auto">
                     @forelse($upcomingTasks as $task)
-                        <div
-                            class="flex items-center gap-4 py-3 border-b border-slate-100 last:border-0 cursor-pointer hover:bg-slate-50"
-                            @click="openTask(@js($task))"
-                        >
-                            {{-- Checkbox column (does NOT open modal) --}}
-                            <div class="pl-1" @click.stop>
-                                <form
-                                    method="POST"
-                                    action="{{ route('tasks.update', $task) }}"
-                                    x-ref="completeForm{{ $task->id }}"
-                                    @change="$refs.completeForm{{ $task->id }}.submit()"
-                                >
-                                    @csrf
-                                    @method('PUT')
+    <div
+        class="flex items-center gap-4 py-3 border-b border-slate-100 last:border-0 hover:bg-slate-50"
+    >
+        {{-- Checkbox column (does NOT open edit) --}}
+        <div class="pl-1" @click.stop>
+            <form
+                method="POST"
+                action="{{ route('tasks.update', $task) }}"
+                x-ref="completeForm{{ $task->id }}"
+                @change="$refs.completeForm{{ $task->id }}.submit()"
+            >
+                @csrf
+                @method('PUT')
 
-                                    <input type="hidden" name="title" value="{{ $task->title }}">
-                                    <input type="hidden" name="notes" value="{{ $task->notes }}">
-                                    <input type="hidden" name="due_date" value="{{ optional($task->due_date)->format('Y-m-d') }}">
-                                    <input type="hidden" name="priority" value="{{ $task->priority }}">
-                                    <input type="hidden" name="status" value="completed">
+                <input type="hidden" name="title" value="{{ $task->title }}">
+                <input type="hidden" name="description" value="{{ $task->description }}">
+                <input type="hidden" name="due_date" value="{{ optional($task->due_date)->format('Y-m-d') }}">
+                <input type="hidden" name="priority" value="{{ $task->priority }}">
+                <input type="hidden" name="status" value="completed">
 
-                                    <input
-                                        type="checkbox"
-                                        class="h-4 w-4 rounded border-slate-300 text-[#800020] focus:ring-[#800020]"
-                                    >
-                                </form>
-                            </div>
+                <input
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-slate-300 text-[#800020] focus:ring-[#800020]"
+                >
+            </form>
+        </div>
 
-                            {{-- Main clickable area --}}
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[14px] font-semibold text-slate-800 truncate">
-                                    {{ $task->title }}
-                                </p>
-                                <p class="text-[11px] text-slate-500 truncate">
-                                    {{ optional($task->course)->name ?? 'No course' }} ·
-                                    Due: {{ optional($task->due_date)->format('M d, Y') ?? 'No date' }}
-                                </p>
-                            </div>
+        {{-- Main clickable area -> EDIT VIEW --}}
+        <a
+            href="{{ route('tasks.edit', $task) }}"
+            class="flex-1 min-w-0 cursor-pointer"
+        >
+            <p class="text-[14px] font-semibold text-slate-800 truncate">
+                {{ $task->title }}
+            </p>
+            <p class="text-[11px] text-slate-500 truncate">
+                {{ optional($task->course)->name ?? 'No course' }} ·
+                Due: {{ optional($task->due_date)->format('M d, Y') ?? 'No date' }}
+            </p>
+        </a>
 
-                            {{-- Status Pill --}}
-                            <div class="flex items-center">
-                                <span class="px-2 py-0.5 rounded-full bg-[#fde6ee] text-[#800020] text-[10px]">
-                                    {{ ucfirst($task->status) }}
-                                </span>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-[12px] text-slate-500">No upcoming tasks.</p>
-                    @endforelse
+        {{-- Status Pill --}}
+        <div class="flex items-center">
+            <span class="px-2 py-0.5 rounded-full bg-[#fde6ee] text-[#800020] text-[10px]">
+                {{ ucfirst($task->status) }}
+            </span>
+        </div>
+    </div>
+@empty
+    <p class="text-[12px] text-slate-500">No upcoming tasks.</p>
+@endforelse
+
                 </div>
             </div>
         </div>
@@ -158,7 +149,9 @@
     </div>
 
     {{-- ADD NEW TASK MODAL (existing partial) --}}
-    @include('partials.add-task-modal', ['modalVar' => 'showTaskModal'])
+    @include('partials.add-task-modal', ['modalVar' => 'showTaskModal', 'courses' => $courses])
+
+    {{-- TASK EDIT MODAL (dynamic) --}}
 
     {{-- EDIT TASK MODAL (centered) --}}
     <div
