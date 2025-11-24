@@ -721,6 +721,19 @@
 </head>
 <body>
     <div class="container" style="min-height: 100vh; display: flex; flex-direction: column;">
+        @auth
+            <div style="position: fixed; top: 24px; right: 24px; z-index: 2000; min-width: 320px; max-width: 400px;">
+                @foreach (auth()->user()->unreadNotifications as $notification)
+                    <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-bottom: 12px; background: #e8f0f2; color: #210706; border-left: 5px solid #891d1a; box-shadow: 0 2px 8px rgba(137,29,26,0.08);">
+                        {{ $notification->data['message'] ?? 'You have a new notification.' }}
+                        <form method="POST" action="{{ route('notifications.read', $notification->id) }}" style="display:inline; float:right;">
+                            @csrf
+                            <button type="submit" class="btn-close" aria-label="Close" style="float:right;"></button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        @endauth
         <!-- Sidebar Toggle Button (mobile/desktop) -->
         <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open sidebar">☰</button>
         <!-- Sidebar -->
@@ -735,31 +748,7 @@
         <!-- Main Content -->
         <div style="flex:1; display: flex; flex-direction: column;">
             <!-- Enhanced Header -->
-            <div class="header" id="mainHeader">
-                <div class="logo" id="headerLogo">
-                    <div class="logo-icon"><img src="{{ asset('logo.png') }}" alt="Logo" style="width:32px;height:32px;border-radius:50%;"></div>
-                    <span>Student Task Planner</span>
-                </div>
-                <!-- User Menu / Auth Links -->
-                @if(Auth::check())
-                    <div class="user-menu" id="userMenu">
-                        <div class="user-avatar" id="userAvatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                        <span>Welcome, {{ Auth::user()->name }}!</span>
-                        <div id="avatarDropdown" class="avatar-dropdown">
-                            <a href="{{ route('profile') }}">Profile</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                @else
-                    <div class="auth-links">
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    </div>
-                @endif
-            </div>
+            @include('layouts.partials.header')
 
             <!-- Main Grid and Content -->
             @if (request()->is('/'))
@@ -815,22 +804,7 @@
                     <!-- Right Sidebar -->
                     <div style="display: flex; flex-direction: column; gap: 24px;">
                         <!-- Progress Card -->
-                        <div class="card progress-card">
-                            <h2 class="card-title">
-                                <i class="fas fa-chart-line"></i>
-                                PROGRESS
-                            </h2>
-                            <div class="progress-container">
-                                <div class="progress-percent">{{ $completionRate }}%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {{ $completionRate }}%"></div>
-                                </div>
-                                <div class="progress-label">
-                                    <span>Complete</span>
-                                    <span>{{ $completedTasks }}/{{ $totalTasks }} Tasks</span>
-                                </div>
-                            </div>
-                        </div>
+                        @include('layouts.partials.progress-card')
 
                         <!-- Leaderboard Card -->
                         <div class="card leaderboard-card">

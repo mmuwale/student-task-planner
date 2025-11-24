@@ -36,7 +36,7 @@ class Studygroupnotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -63,6 +63,7 @@ class Studygroupnotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'message' => ($this->newMember->name ?? 'A user') . ' joined your group "' . ($this->group->name ?? '') . '".',
             'group_id' => $this->group->id ?? null,
             'group_name' => $this->group->name ?? '',
             'new_member_id' => $this->newMember->id ?? null,

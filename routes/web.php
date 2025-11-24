@@ -6,6 +6,13 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Courses;
+use App\Models\User;
+use App\Notifications\ReminderNotification;
+use App\Notifications\ForgotPasswordNotification;
+use App\Notifications\Studygroupnotification;
+use App\Notifications\VerifypasswordNotification;
+use App\Models\Task;
+use App\Models\StudyGroup;
 
 use Illuminate\Support\Facades\Mail;
 
@@ -74,6 +81,7 @@ Route::get('tasks/create', function () {
     Route::get('settings/create', function () {
         return view('settings.create');
     })->name('settings.create');
+    Route::post('settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update')->middleware('auth');
 
 // Test email route (temporary)
 Route::get('/test-email', function () {
@@ -87,3 +95,57 @@ Route::get('/test-email', function () {
         return 'Email error: ' . $e->getMessage();
     }
 });
+
+// Test notification route (temporary)
+
+Route::get('/test-notification', function () {
+    $user = User::first();
+    $task = Task::first();
+    if (!$user || !$task) {
+        return 'No user or task found.';
+    }
+    $user->notify(new ReminderNotification($task, now()->addHour()->toDateTimeString()));
+    return 'Notification sent to ' . $user->email;
+});
+
+// Test all notifications (temporary)
+Route::get('/test-forgot-password', function () {
+    $user = User::first();
+    if (!$user) return 'No user found.';
+    $token = 'test-reset-token';
+    $user->notify(new ForgotPasswordNotification($token));
+    return 'ForgotPasswordNotification sent to ' . $user->email;
+});
+
+Route::get('/test-reminder', function () {
+    $user = User::first();
+    $task = Task::first();
+    if (!$user || !$task) return 'No user or task found.';
+    $user->notify(new ReminderNotification($task, now()->addHour()->toDateTimeString()));
+    return 'ReminderNotification sent to ' . $user->email;
+});
+
+Route::get('/test-studygroup', function () {
+    $user = User::first();
+    $group = StudyGroup::first();
+    $newMember = User::skip(1)->first() ?? $user;
+    $members = User::all();
+    if (!$user || !$group) return 'No user or group found.';
+    $user->notify(new Studygroupnotification($group, $newMember, $members));
+    return 'Studygroupnotification sent to ' . $user->email;
+});
+
+Route::get('/test-verify-password', function () {
+    $user = User::first();
+    if (!$user) return 'No user found.';
+    $token = 'test-verify-token';
+    $user->notify(new VerifypasswordNotification($token));
+    return 'VerifypasswordNotification sent to ' . $user->email;
+});
+
+// Mark notification as read
+Route::post('/notifications/{id}/read', function ($id) {
+    $notification = auth()->user->notifications()->findOrFail($id);
+    $notification->markAsRead();
+    return back();
+})->name('notifications.read')->middleware('auth');
