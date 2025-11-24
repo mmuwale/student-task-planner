@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Student Planner')</title>
+    @if (request()->routeIs('courses') || request()->routeIs('courses.*'))
+        <title>My Courses</title>
+        <link rel="icon" type="image/png" href="{{ asset('logo_transparent.png') }}">
+    @else
+        <title>@yield('title', 'Student Planner')</title>
+        <link rel="icon" type="image/png" href="{{ asset('logo_transparent.png') }}">
+    @endif
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -18,20 +24,14 @@
         {{-- Top / toggle --}}
         <div class="flex items-center justify-between px-3 py-4 border-b border-[#72213c]">
             <div class="flex items-center gap-2">
-                <div class="h-12 w-12 rounded-full bg-[#800020] flex items-center justify-center text-xs font-bold overflow-hidden">
+                <button @click="sidebarOpen = !sidebarOpen" class="h-12 w-12 rounded-full bg-[#800020] flex items-center justify-center text-xs font-bold overflow-hidden focus:outline-none">
                     <img src="{{ asset('logo.png') }}" alt="Logo" class="h-12 w-12 object-cover" />
-                </div>
+                </button>
                 <div x-show="sidebarOpen" class="text-xs leading-tight">
                     <div class="font-semibold tracking-wide">Student Task Planner</div>
                 </div>
             </div>
 
-            <button
-                @click="sidebarOpen = !sidebarOpen"
-                class="ml-2 h-7 w-7 flex items-center justify-center rounded-md bg-[#800020] hover:bg-[#a21c3b] text-[11px]">
-                <span x-show="sidebarOpen">«</span>
-                <span x-show="!sidebarOpen">»</span>
-            </button>
         </div>
 
         {{-- Main nav --}}
