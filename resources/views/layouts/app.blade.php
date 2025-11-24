@@ -148,6 +148,9 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Header */
@@ -568,6 +571,11 @@
         .task-dot.blue { background: #5b8fa3; }
         .task-dot.purple { background: #8b6fa3; }
 
+        /* Content shifting for mobile sidebar - APPLIES TO ALL PAGES */
+        .main-content-container {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .main-grid {
@@ -619,7 +627,7 @@
     </style>
 </head>
 <body>
-    <div class="container" style="min-height: 100vh; display: flex; flex-direction: column;">
+    <div class="container">
         <!-- Sidebar Toggle Button (mobile/desktop) -->
         <button class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Open sidebar">☰</button>
         <!-- Sidebar -->
@@ -632,7 +640,7 @@
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Main Content -->
-    <div style="flex:1; display: flex; flex-direction: column;">
+        <div class="main-content-container" id="mainContent" style="flex:1; display: flex; flex-direction: column;">
             <!-- Enhanced Header -->
             <div class="header" id="mainHeader">
                 <div class="logo" id="headerLogo">
@@ -745,9 +753,18 @@
                     </div>
                 </div>
             @else
-                @yield('content')
+                <!-- This applies to ALL other pages (Study Group, Calendar, Reminders, etc.) -->
+                <div class="page-content">
+                    @yield('content')
+                </div>
             @endif
         </div>
+
+        <footer class="footer" style="margin-top: auto;">
+            <a href="#" style="color: #f0f6f7; text-decoration: none; font-weight: 600;">
+                &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
+            </a>
+        </footer>
     </div>
 
     <script>
@@ -758,8 +775,22 @@
             const mainGrid = document.getElementById('mainGrid');
             const sidebarToggle = document.getElementById('sidebarToggle');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
             
             let isSidebarHidden = false;
+
+            // Function to shift content when sidebar is open - WORKS FOR ALL PAGES
+            function shiftContent(shouldShift) {
+                if (window.innerWidth < 1025 && mainContent) {
+                    if (shouldShift) {
+                        mainContent.style.transform = 'translateX(260px)';
+                        mainContent.style.marginRight = '-260px';
+                    } else {
+                        mainContent.style.transform = 'translateX(0)';
+                        mainContent.style.marginRight = '0';
+                    }
+                }
+            }
 
             // Header logo toggles sidebar and expands header
             headerLogo.addEventListener('click', function() {
@@ -770,26 +801,33 @@
                     sidebar.classList.add('hide');
                     header.classList.add('expanded');
                     if (mainGrid) mainGrid.classList.add('expanded');
+                    shiftContent(false);
                 } else {
                     // Show sidebar and collapse header
                     sidebar.classList.remove('hide');
                     header.classList.remove('expanded');
                     if (mainGrid) mainGrid.classList.remove('expanded');
+                    if (window.innerWidth < 1025) {
+                        shiftContent(true);
+                    }
                 }
             });
 
-            // Mobile sidebar toggle
+            // Mobile sidebar toggle - FIXED
             sidebarToggle.addEventListener('click', function() {
+                const isOpening = !sidebar.classList.contains('open');
                 sidebar.classList.toggle('open');
-                sidebarOverlay.classList.toggle('open');
+                sidebarOverlay.style.display = isOpening ? 'block' : 'none';
+                shiftContent(isOpening);
             });
             
             sidebarOverlay.addEventListener('click', function() {
                 sidebar.classList.remove('open');
-                sidebarOverlay.classList.remove('open');
+                this.style.display = 'none';
+                shiftContent(false);
             });
 
-            // Task completion animation
+            // Task completion animation (only for home page)
             document.querySelectorAll('.task-checkbox').forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
                     const taskItem = this.closest('.task-item');
@@ -803,33 +841,51 @@
                 });
             });
 
-            // Handle responsive behavior
+            // Handle responsive behavior - IMPROVED
             function handleResize() {
                 if (window.innerWidth >= 1025) {
                     // Desktop: ensure proper state
                     sidebar.classList.remove('open');
-                    sidebarOverlay.classList.remove('open');
+                    sidebarOverlay.style.display = 'none';
+                    sidebarToggle.style.display = 'none';
+                    shiftContent(false);
+                    
                     if (!isSidebarHidden) {
                         sidebar.classList.remove('hide');
                         header.classList.remove('expanded');
                         if (mainGrid) mainGrid.classList.remove('expanded');
                     }
                 } else {
-                    // Mobile: reset expanded state
+                    // Mobile: reset expanded state and show toggle button
+                    sidebarToggle.style.display = 'inline-block';
                     header.classList.remove('expanded');
                     if (mainGrid) mainGrid.classList.remove('expanded');
+                    sidebar.classList.remove('hide');
+                    shiftContent(sidebar.classList.contains('open'));
+                    
+                    // Ensure sidebar starts closed on mobile
+                    if (!sidebar.classList.contains('open')) {
+                        sidebar.classList.remove('open');
+                        sidebarOverlay.style.display = 'none';
+                        shiftContent(false);
+                    }
                 }
             }
 
             window.addEventListener('resize', handleResize);
             handleResize(); // Initial check
+
+            // Close sidebar when clicking on sidebar items on mobile
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (window.innerWidth < 1025) {
+                        sidebar.classList.remove('open');
+                        sidebarOverlay.style.display = 'none';
+                        shiftContent(false);
+                    }
+                });
+            });
         });
     </script>
-
-    <footer class="footer">
-        <a href="#" style="color: #f0f6f7; text-decoration: none; font-weight: 600;">
-            &copy; {{ date('Y') }} Student Task Planner. All rights reserved.
-        </a>
-    </footer>
 </body>
 </html>
