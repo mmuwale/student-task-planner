@@ -1,70 +1,45 @@
-@extends('layouts.app')
 
-@section('title', 'Forgot Password')
-
-@section('content')
-<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f0f6f7 0%, #e8f0f2 100%); padding: 20px;">
-    <div style="max-width: 440px; width: 100%; background: #ffffff; border-radius: 20px; box-shadow: 0 12px 40px rgba(137, 29, 26, 0.1); padding: 48px 40px; border: 1px solid rgba(241, 230, 210, 0.3);">
-        <!-- Logo -->
-        <div style="text-align: center; margin-bottom: 32px;">
-            <h3 style="color: #210706; font-size: 28px; font-weight: 700; margin: 0;">Reset Your Password</h3>
-            <p style="color: #6b7280; margin-top: 8px; font-size: 14px;">Enter your email to receive a password reset link</p>
-        </div>
-
-        <!-- Session Status -->
-        @if (session('status'))
-            <div style="background: #f8f4eb; border: 1px solid rgba(137, 29, 26, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 24px; color: #210706; font-size: 14px;">
-                {{ session('status') }}
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div style="margin-bottom: 32px;">
-                <label for="email" style="display: block; color: #210706; font-weight: 600; margin-bottom: 8px; font-size: 14px;">Email Address</label>
-                <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email"
-                       style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(241, 230, 210, 0.8); background: #f8f4eb; color: #210706; font-size: 15px; transition: all 0.2s;"
-                       onfocus="this.style.borderColor='#891d1a'; this.style.boxShadow='0 0 0 2px rgba(137, 29, 26, 0.1)';"
-                       onblur="this.style.borderColor='rgba(241, 230, 210, 0.8)'; this.style.boxShadow='none';">
-                @error('email')
-                    <div style="color: #dc2626; font-size: 14px; margin-top: 6px;">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" 
-                    style="width: 100%; background: linear-gradient(90deg, #891d1a 0%, #a82a26 100%); color: #ffffff; border: none; border-radius: 12px; padding: 16px 0; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(137, 29, 26, 0.3);"
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(137, 29, 26, 0.4)';"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(137, 29, 26, 0.3)';">
-                Email Password Reset Link
-            </button>
-        </form>
-
-        <!-- Back to Login Link -->
-        <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(241, 230, 210, 0.5);">
-            <p style="color: #6b7280; font-size: 14px; margin: 0;">
-                Remember your password?
-                <a href="{{ route('login') }}" style="color: #891d1a; text-decoration: none; font-weight: 600; margin-left: 4px; transition: color 0.2s;"
-                   onmouseover="this.style.color='#a82a26';"
-                   onmouseout="this.style.color='#891d1a';">
-                    Back to login
-                </a>
-            </p>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgot Password – Student Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-slate-100">
+<div class="w-full max-w-md bg-[#f7ecf0] border border-[#e0c1cd] rounded-xl shadow-sm p-8">
+    <div class="mb-6 text-center">
+        <img src="{{ asset('logo_2.png') }}" alt="Logo" class="h-10 mx-auto mb-1" />
+        <h1 class="text-xl font-semibold text-slate-800">Reset Your Password</h1>
+        <p class="text-sm text-slate-500 mt-1">Enter your email to receive a password reset link</p>
     </div>
-</div>
 
-<style>
-    /* Additional responsive styles */
-    @media (max-width: 480px) {
-        .container {
-            padding: 20px 16px;
-        }
-        .form-container {
-            padding: 32px 24px;
-        }
-    }
-</style>
-@endsection
+    @if (session('status'))
+        <div class="mb-3 text-xs text-green-700 text-center bg-green-50 border border-green-200 rounded-md py-2 px-3">
+            {{ session('status') }}
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
+        @csrf
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
+            <input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email"
+                   class="w-full border border-[#d2aabb] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#800020]/60">
+            @error('email')
+                <div class="text-xs text-red-600 mt-1">{{ $message }}</div>
+            @enderror
+        </div>
+        <button type="submit"
+                class="w-full mt-2 bg-[#800020] text-white text-sm font-medium py-2 rounded-md hover:bg-[#5e0617] transition">
+            Email Password Reset Link
+        </button>
+    </form>
+
+    <p class="mt-5 text-xs text-center text-slate-600">
+        Remember your password?
+        <a href="{{ route('login') }}" class="text-[#800020] font-semibold hover:underline">Back to login</a>
+    </p>
+</div>
+</body>
+</html>
