@@ -84,10 +84,12 @@ Route::get('settings/create', function () {
 
 
 // better routes
+Route::resource('courses', CourseController::class);
+
+
 Route::get('/courses/{course}', [CourseController::class, 'show'])
      ->name('courses.show');
 
-Route::resource('courses', CourseController::class);
 
 Route::post('/courses/{course}/resources', [CourseResourceController::class, 'store'])
     ->name('courses.resources.store');

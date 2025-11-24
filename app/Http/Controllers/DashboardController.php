@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+     public function index()
     {
         $today   = Carbon::today();
         $weekEnd = $today->copy()->addDays(7);
@@ -26,15 +26,24 @@ class DashboardController extends Controller
             ->orderBy('due_date')
             ->get();
 
-        // Tasks due today (non-completed)
-        $todayCount = Task::where('status', '!=', 'completed')
+        // 🔹 Tasks due today (non-completed)
+        $todayTasks = Task::with('course')
+            ->where('status', '!=', 'completed')
             ->whereDate('due_date', $today)
-            ->count();
+            ->orderBy('due_date')
+            ->get();
 
-        // Tasks due this week (next 7 days incl. today, non-completed)
-        $weekCount = Task::where('status', '!=', 'completed')
+        $todayCount = $todayTasks->count();
+
+        // 🔹 Tasks due this week (next 7 days AFTER today, non-completed)
+        // If you want today included too, change $today->copy()->addDay() back to $today
+        $weekTasks = Task::with('course')
+            ->where('status', '!=', 'completed')
             ->whereBetween('due_date', [$today, $weekEnd])
-            ->count();
+            ->orderBy('due_date')
+            ->get();
+
+        $weekCount = $weekTasks->count();
 
         // Build $weekDays array for daily cards (next 7 days)
         $weekDays = [];
@@ -55,7 +64,6 @@ class DashboardController extends Controller
                     ];
                 });
 
-            // 🟢 rename this so it doesn't conflict with global $courses
             $dayCourses = Course::whereHas('tasks', function ($q) use ($date) {
                     $q->whereDate('due_date', $date->toDateString());
                 })
@@ -95,7 +103,7 @@ class DashboardController extends Controller
             ->sortByDesc('completion_rate')
             ->values();
 
-        // 🔹 If your views still expect $courses (e.g. old modal/sidebar), define it here:
+        // Courses list if any part of the view still needs it
         $courses = Course::orderBy('name')->get();
 
         // Pass all variables to the dashboard view
@@ -110,6 +118,8 @@ class DashboardController extends Controller
             'weekCount',
             'progressPercent',
             'courses',
+            'todayTasks',
+            'weekTasks',
         ));
     }
 
