@@ -71,25 +71,6 @@
             >{{ old('description') }}</textarea>
         </div>
 
-        {{-- Color Tag --}}
-        <div>
-            <label class="block mb-1 font-semibold text-[12px] text-slate-700">
-                Course Color Tag (Optional)
-            </label>
-
-            <select
-                name="color"
-                class="w-full border border-slate-300 rounded-md px-3 py-2 text-xs focus:ring-[#800020]/60 focus:border-[#800020]"
-            >
-                <option value="">None</option>
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
-                <option value="green">Green</option>
-                <option value="purple">Purple</option>
-                <option value="yellow">Yellow</option>
-                <option value="pink">Pink</option>
-            </select>
-        </div>
 
         {{-- SUBMIT ACTIONS --}}
         <div class="flex justify-end gap-2 pt-2">

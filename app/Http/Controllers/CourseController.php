@@ -22,7 +22,6 @@ class CourseController extends Controller
         'name'        => 'required|string|max:255',
         'code'        => 'nullable|string|max:50',   // from the form
         'description' => 'nullable|string',
-        'color'       => 'nullable|string|max:20',
     ]);
 
     // Map form field `code` -> DB column `course_code`
@@ -30,7 +29,6 @@ class CourseController extends Controller
         'name'         => $data['name'],
         'course_code'  => $data['code'] ?? null,      // or null if column is nullable
         'description'  => $data['description'] ?? null,
-        'color'        => $data['color'] ?? null,
         'instructor_id'=> auth()->id(),// since admin = instructor
         'user_id'      => auth()->id(), // assuming the user creating the course is the owner
     ]);

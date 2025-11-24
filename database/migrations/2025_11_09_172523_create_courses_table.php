@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('instructor')->nullable();
-            $table->string('color')->default('#3b82f6');
             $table->integer('credit_hours')->default(3);
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // ADD THIS LINE
             $table->timestamps();

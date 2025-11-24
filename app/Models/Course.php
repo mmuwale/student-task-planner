@@ -15,7 +15,6 @@ class Course extends Model
         'name',
         'description',
         'instructor',
-        'color',
         'credit_hours',
     ];
 
