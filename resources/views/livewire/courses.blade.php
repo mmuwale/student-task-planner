@@ -25,18 +25,18 @@
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn" style="border-radius: 12px; background: linear-gradient(135deg, #891d1a 0%, #a82a26 100%); color: #fff; font-weight: 700; padding: 8px 24px; border: none; box-shadow: 0 4px 16px rgba(137,29,26,0.08); transition: background 0.2s;">{{ $isEditing ? 'Update Course' : 'Add Course' }}</button>
-                        <button type="button" wire:click="cancel" class="btn btn-outline-secondary" style="border-radius: 12px; font-weight: 700; background: #fff; color: #891d1a; border: 1px solid #891d1a; padding: 8px 24px;">Cancel</button>
+                        <button type="button" wire:click="cancel" class="btn btn-outline-secondary flex-fill" style="border-radius: 12px; font-weight: 600; background: #fff; color: #891d1a; border: 1px solid #891d1a;">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
     @else
         <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 32px;">
-            <h2 class="card-title" style="font-size: 24px; font-weight: 800; color: #210706; letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px;">
-                <i class="fas fa-book" style="color: #210706; font-size: 24px;"></i>
+            <h2 class="card-title" style="font-size: 24px; font-weight: 800; color: #f0f6f7; letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-book" style="color: #f0f6f7; font-size: 24px;"></i>
                 My Courses
             </h2>
-            <div class="d-flex gap-2" style="align-items: center; margin-left: auto; justify-content: flex-end; min-width: 340px;">
+            <div class="d-flex gap-2" style="align-items: center; margin-left: auto; justify-content: flex-end; width: 100%;">
                 <input type="text" wire:model.live.debounce.300ms="search" class="form-control" style="width: 200px; border-radius: 12px; background: #f8f9fa; border: 1px solid #e8f0f2; font-size: 15px; padding: 8px 16px;" placeholder="Search courses...">
                 <button wire:click="create" class="btn" style="border-radius: 12px; background: linear-gradient(180deg, #210706 0%, #391016 100%); color: #f0f6f7; font-weight: 700; padding: 8px 24px; border: none; box-shadow: 0 4px 16px rgba(137,29,26,0.08); transition: background 0.2s;">
                     <i class="fas fa-plus" style="margin-right: 8px;"></i> Add New Course
