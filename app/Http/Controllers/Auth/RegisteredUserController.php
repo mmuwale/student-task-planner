@@ -35,16 +35,17 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        $token = bin2hex(random_bytes(16));
+        // Store registration data in session until verified
+        $request->session()->put('registration_data', [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'email_verification_token' => $token,
         ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        // Send token to user's email using Notification::route so it matches the session token
+        \Illuminate\Support\Facades\Notification::route('mail', $request->email)
+            ->notify(new \App\Notifications\VerifypasswordNotification($token));
+        return redirect()->route('verify-password');
     }
 }

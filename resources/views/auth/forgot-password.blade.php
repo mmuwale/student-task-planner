@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Forgot Password – Student Planner</title>
+    <title>Forgot Password</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex items-center justify-center bg-slate-100">
 <div class="w-full max-w-md bg-[#f7ecf0] border border-[#e0c1cd] rounded-xl shadow-sm p-8">
     <div class="mb-6 text-center">
-        <img src="{{ asset('logo_2.png') }}" alt="Logo" class="h-10 mx-auto mb-1" />
+        <img src="{{ asset('logo_transparent.png') }}" alt="Logo" class="h-10 mx-auto mb-1" />
         <h1 class="text-xl font-semibold text-slate-800">Reset Your Password</h1>
         <p class="text-sm text-slate-500 mt-1">Enter your email to receive a password reset link</p>
     </div>

@@ -23,7 +23,7 @@
         @csrf
         <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Username</label>
-            <input type="text" name="email"
+            <input type="text" name="email" value="{{ old('email') }}"
                    class="w-full border border-[#d2aabb] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#800020]/60">
         </div>
         <div>

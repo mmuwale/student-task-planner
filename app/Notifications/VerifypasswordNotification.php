@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class VerifypasswordNotification extends Notification implements ShouldQueue
+class VerifypasswordNotification extends Notification
 {
     use Queueable;
 
@@ -36,14 +36,16 @@ class VerifypasswordNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $verifyUrl = url('/verify-email?token=' . $this->token . '&email=' . urlencode($notifiable->email));
+        $email = method_exists($notifiable, 'routeNotificationFor') ? $notifiable->routeNotificationFor('mail') : ($notifiable->routes['mail'][0] ?? null);
+        $verifyUrl = url('/dashboard');
+        $name = property_exists($notifiable, 'name') ? $notifiable->name : 'User';
         return (new MailMessage)
             ->subject('Verify Your Email Address')
-            ->greeting('Hello ' . ($notifiable->name ?? 'User') . ',')
+            ->greeting('Hello ' . $name . ',')
             ->line('Thank you for registering! To complete your registration, please verify your email address.')
             ->line('Your verification token is:')
-            ->line('<strong>' . $this->token . '</strong>')
-            ->action('Verify Email', $verifyUrl)
+            ->line($this->token)
+            ->line('Copy and paste this token into the verification form to activate your account.')
             ->line('If you did not create an account, no further action is required.')
             ->line('Thank you for using Student Task Planner!');
     }
