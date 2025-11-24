@@ -7,16 +7,6 @@
     <h2 style="margin-bottom: 24px; color: #3d1f2e;">Settings</h2>
     <form style="margin-top: 24px; flex: 1; color: #3d1f2e;" method="POST" action="#">
         @csrf
-        <!-- Profile Section -->
-        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Profile</h3>
-        <div style="margin-bottom: 20px;">
-            <label for="name" style="display: block; margin-bottom: 6px;">Name</label>
-            <input type="text" id="name" name="name" value="John Doe" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
-        </div>
-        <div style="margin-bottom: 28px;">
-            <label for="email" style="display: block; margin-bottom: 6px;">Email</label>
-            <input type="email" id="email" name="email" value="john@example.com" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
-        </div>
         <!-- Security Section -->
         <h3 style="margin-bottom: 12px; color: #6b3d4d;">Account Security</h3>
         <div style="margin-bottom: 20px;">
@@ -27,9 +17,7 @@
             <label for="2fa" style="display: block; margin-bottom: 6px;">Two-Factor Authentication</label>
             <select id="2fa" name="2fa" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
                 <option value="off">Off</option>
-                <option value="sms">SMS</option>
                 <option value="email">Email</option>
-                <option value="app">Authenticator App</option>
             </select>
         </div>
         <!-- Notification Preferences -->
@@ -38,22 +26,10 @@
             <label style="display: block; margin-bottom: 6px;">Receive notifications via:</label>
             <div style="display: flex; gap: 16px;">
                 <label><input type="checkbox" name="notify_email" checked> Email</label>
-                <label><input type="checkbox" name="notify_sms"> SMS</label>
             </div>
         </div>
         <!-- Language -->
-        <h3 style="margin-bottom: 12px; color: #6b3d4d;">Language</h3>
-        <div style="margin-bottom: 28px;">
-            <label for="language" style="display: block; margin-bottom: 6px;">Preferred language</label>
-            <select id="language" name="language" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ceb2bd;">
-                <option value="en">English</option>
-                <option value="fr">French</option>
-                <option value="es">Spanish</option>
-                <option value="sw">Swahili</option>
-                <option value="zh">Chinese</option>
-                <option value="ar">German</option>
-            </select>
-        </div>
+        
         <!-- Account Actions -->
         <h3 style="margin-bottom: 12px; color: #6b3d4d;">Account Actions</h3>
         <div style="margin-bottom: 20px; display: flex; gap: 16px;">

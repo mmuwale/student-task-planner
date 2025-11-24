@@ -5,8 +5,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Courses;
 
-// Existing routes
+use Illuminate\Support\Facades\Mail;
+
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/dashboard', function () {
@@ -21,22 +23,20 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Initial code routes
+
 Route::apiResource('tasks', TaskController::class);
 Route::post('tasks/{task}/clear-reminder', [TaskController::class, 'clearReminder']);
 
 // dashboard
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('dashboard/summary', [DashboardController::class, 'summary']);
-Route::get('courses', [CourseController::class, 'index'])->name('courses');
 
-Route::get('courses', function () {
-    return view('courses.index');
-})->name('courses');
-Route::get('courses/create', function () {
-    return view('courses.create');
-})->name('courses.create');
 
+Route::get('/courses', Courses::class)->name('courses');
+
+
+
+// Other unchanged routes
 Route::get('profile', function () {
     return view('profile.index');
 })->name('profile');
@@ -47,46 +47,43 @@ Route::get('tasks/create', function () {
     return view('tasks.create');
 })->name('tasks.create');
 
-Route::get('projects', function () {
-    return view('projects.index');
-})->name('projects');
+    // Study Groups
+    Route::get('study-group', function () {
+        return view('study-group.index');
+    })->name('study-group.index');
+    Route::get('study-group/create', function () {
+        return view('study-group.create');
+    })->name('study-group.create');
 
-Route::get('projects/create', function () {
-    return view('projects.create');
-})->name('projects.create');
+    // Calendar
+    require __DIR__.'/calendar.php';
+    Route::get('calendar/create', function () {
+        return view('calendar.create');
+    })->name('calendar.create');
 
-Route::get('study-group', function () {
-    return view('study-group.index');
-})->name('study-group');
+    // Reminders
+    require __DIR__.'/reminders.php';
+    Route::get('reminders/create', function () {
+        return view('reminders.create');
+    })->name('reminders.create');
 
-Route::get('study-group/create', function () {
-    return view('study-group.create');
-})->name('study-group.create');
+    // Settings
+    Route::get('settings', function () {
+        return view('settings.index');
+    })->name('settings.index');
+    Route::get('settings/create', function () {
+        return view('settings.create');
+    })->name('settings.create');
 
-require __DIR__.'/calendar.php';
-
-Route::get('calendar/create', function () {
-    return view('calendar.create');
-})->name('calendar.create');
-
-require __DIR__.'/reminders.php';
-
-Route::get('reminders/create', function () {
-    return view('reminders.create');
-})->name('reminders.create');
-
-Route::get('my-projects', function () {
-    return view('projects.index');
-})->name('my-projects');
-
-Route::get('my-projects/create', function () {
-    return view('projects.create');
-})->name('my-projects.create');
-
-Route::get('settings', function () {
-    return view('settings.index');
-})->name('settings');
-
-Route::get('settings/create', function () {
-    return view('settings.create');
-})->name('settings.create');
+// Test email route (temporary)
+Route::get('/test-email', function () {
+    try {
+        Mail::raw('Test email from Student Task Planner', function ($message) {
+            $message->to('test@example.com')
+                    ->subject('Test Email');
+        });
+        return 'Email sent successfully!';
+    } catch (\Exception $e) {
+        return 'Email error: ' . $e->getMessage();
+    }
+});
