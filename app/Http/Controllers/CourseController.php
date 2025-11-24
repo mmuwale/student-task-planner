@@ -16,9 +16,29 @@ class CourseController extends Controller
     }
 
     public function store(Request $request)
-    {
-        return Course::create($request->all());
-    }
+{
+    // Validate incoming data
+    $data = $request->validate([
+        'name'        => 'required|string|max:255',
+        'code'        => 'nullable|string|max:50',   // from the form
+        'description' => 'nullable|string',
+        'color'       => 'nullable|string|max:20',
+    ]);
+
+    // Map form field `code` -> DB column `course_code`
+    $course = Course::create([
+        'name'         => $data['name'],
+        'course_code'  => $data['code'] ?? null,      // or null if column is nullable
+        'description'  => $data['description'] ?? null,
+        'color'        => $data['color'] ?? null,
+        'instructor_id'=> auth()->id(),// since admin = instructor
+        'user_id'      => auth()->id(), // assuming the user creating the course is the owner
+    ]);
+
+    return redirect()
+        ->route('courses.show', $course)
+        ->with('status', 'Course created successfully.');
+}
 
    public function show(Course $course)
     {
@@ -55,5 +75,10 @@ class CourseController extends Controller
     {
         $course->delete();
         return response()->json(['message' => 'Deleted successfully']);
+    }
+
+    public function create()
+    {
+        return view('courses.create');
     }
 }

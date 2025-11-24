@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('course_code'); // Remove unique() - users can have same course codes
+            $table->string('course_code')->nullable(); // Remove unique() - users can have same course codes
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('instructor')->nullable();
