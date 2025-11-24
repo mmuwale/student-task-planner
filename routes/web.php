@@ -6,6 +6,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Courses;
+
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
